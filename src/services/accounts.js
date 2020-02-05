@@ -32,7 +32,7 @@ const fetchBalance = async (id=0, delay=false) => {
 };
 
 const fetchProperties = async (delay=false) => {
-    const url = '/data/properties.json';
+    const url = '%PUBLIC_URL%/data/properties.json';
     //const url = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/gallons/3463463';
     try {
         const response = await axios({
