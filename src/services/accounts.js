@@ -11,7 +11,7 @@ function randomError() {
 }
 
 const fetchBalance = async (id=0, delay=false) => {
-    const url = '/data/properties.json';
+    const url = '%PUBLIC_URL%/data/properties.json';
     try {
         const response = await axios({
             method: 'get',
