@@ -1,0 +1,466 @@
+@import url('/css-reset.css');
+@import url('https://fonts.googleapis.com/css?family=Montserrat|Nunito|Quicksand|Roboto&display=swap');
+
+$box-size: 384px;
+$box-size-2: 229px;
+$box-color: white;
+$box-border-color: #3272de;
+$button-color: #555;
+$background: #3a3a4d;
+$color: #efefef;
+
+
+/************  Mixins **************/
+@mixin flex-css($direction: row, $justify: center, $align: center, $wrap: nowrap) {
+  display: flex;
+  flex-direction: $direction;
+  flex-wrap: $wrap;
+  justify-content: $justify;
+  align-items: $align;
+}
+
+
+
+body {
+  @include flex-css($direction: column, $justify: flex-start );
+}
+body > div {
+  align-self: stretch;
+}
+
+.content-max {
+  @include flex-css();
+  max-width: 1220px;
+
+  flex: 0 1 1220px;
+}
+
+.circle {
+  width: 75px;
+  height: 75px;
+  border-radius: 100%;
+  background-color: #fDcF51;
+  margin: 50px;
+}
+
+.circle.red {
+  background-color: #fd5151;
+}
+
+.circle.blue {
+  background-color: #51a0fd;
+}
+
+#overlay {
+  position: fixed;
+  width: 100%;
+  height: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  opacity: 0;
+  z-index: 200;
+}
+
+
+
+/*************** Tiles (Cards) *************/
+.flex-card-container {
+  @include flex-css($align: flex-start, $wrap: wrap);
+
+  &::after { /*fixes last row of orphans*/
+    content: "";
+    flex: auto;
+  }
+}
+
+.flex-card-loader {
+  width: $box-size;
+  height: $box-size-2;
+  margin: 10px;
+  background: #FFFFFF;
+  border: 1px solid #3250B3;
+  box-shadow: 0px 10px 20px rgba(31, 32, 65, 0.05);
+  border-radius: 4px;
+}
+.flex-card {
+  @include flex-css($justify: space-between, $align: flex-start);
+  width: $box-size;
+  height: $box-size-2;
+  margin: 10px;
+  padding: 15px;
+  background: #FFFFFF;
+  border: 1px solid #3250B3;
+  box-shadow: 0px 10px 20px rgba(31, 32, 65, 0.05);
+  border-radius: 4px;
+}
+.flex-card-column {
+  @include flex-css($direction: column, $justify: space-between, $align: flex-start);
+  height: 100%;
+
+  &.right {
+    align-items: flex-end;
+  }
+
+  .account {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 11px;
+    color: #4F4F4F;
+  }
+  .address {
+    font-family: Quicksand;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 19px;
+    line-height: 24px;
+    color: #1F2041;
+  }
+  .balance {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 42px;
+    line-height: 57px;
+    color: #0078AE;
+  }
+  .legend {
+    @include flex-css($direction: column, $justify: flex-start, $align: flex-start);
+    width: 100%;
+    margin: 10px 0 10px 50px;
+  }
+  .confirmation {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 11px;
+    color: #4F4F4F;
+  }
+  .chart {
+    flex: 1 1 auto;
+    position: relative;
+
+    .doughnut-middle {
+      position: absolute;
+      top: 40px;
+      width: 140px;
+      font-family: Quicksand;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 24px;
+      line-height: 30px;
+      text-align: center;
+      color: #0078AE;
+
+      .bottom {
+        font-family: Montserrat;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 15px;
+        text-align: center;
+        text-transform: uppercase;
+        color: #5691C8;
+      }
+    }
+  }
+} /* flex-card-column*/
+
+
+
+.clip {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: clip;
+}
+.pointer {
+  cursor: pointer;
+}
+.flex-css {
+  @include flex-css();
+}
+.retry {
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 10px;
+  line-height: 11px;
+  color: red;
+  cursor: pointer;
+}
+.status {
+  height: 24px;
+  padding: 2px 5px 5px 5px;
+  border: 1px solid #FFFFFF;
+  border-radius: 2px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 13px;
+  line-height: 15px;
+  text-transform: capitalize;
+  color: #FFFFFF;
+
+  &.issue {
+    background: #ae0001;
+  }
+  &.pending {
+    background: #FF8522;
+  }
+  &.received {
+    background: #279A2C;
+  }
+}
+
+
+/* Disappearing borders didn't work: https://stackoverflow.com/questions/49000385/css-border-disappears-when-child-element-has-a-background-color-and-browser-is-z/49000386 */
+.search-border {
+  border-top: 1px solid #6848B5;
+  border-bottom: 1px solid #6848B5;
+  border-left: 1px solid #6848B5;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+.search {
+  @include flex-css();
+  height: 94px;
+
+  .search-option {
+    flex: 1 1 auto;
+    border-right: 1px solid #6848B5;
+
+    &:last-of-type {
+      border-right: none;
+    }
+
+    .search-top {
+      @include flex-css($justify: space-between);
+      height: 28px;
+      padding: 6px;
+      font-family: 'Roboto';
+      font-style: normal;
+      font-weight: bold;
+      font-size: 14px;
+      line-height: 16px;
+      color: #FFFFFF;
+      background: #828282;
+    }
+
+    .search-bottom {
+      @include flex-css($direction: column, $justify: space-between, $align: flex-start);
+      height: 64px;
+      padding: 10px 10px 10px 20px;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 13px;
+      line-height: 15px;
+      color: #DA690B;
+      background: #f3f0f9;
+
+      .search-row {
+        @include flex-css($justify: flex-start);
+        font-family: Roboto;
+        font-style: normal;
+        font-weight: 300;
+        font-size: 13px;
+        line-height: 15px;
+        color: #222222;
+
+        .spacer {
+          width: 20px;
+        }
+
+        input[type=text] {
+          width: 76px;
+          padding: 4px;
+          margin-right: 10px;
+        }
+
+        .sort {
+          cursor: pointer;
+        }
+      }
+    }
+
+  } /* .search-option */
+}
+
+
+/***************** Top Nav *********************/
+.nav-header {
+  @include flex-css();
+  height: 100px;
+
+  .title {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 30px;
+    line-height: 41px;
+    text-transform: capitalize;
+    color: #6848B5;
+    flex: 1 1 auto;
+    margin-left: 40px;
+  }
+
+  .need-help {
+    width: 120px;
+    height: 44px;
+    background: #FF7200;
+    border-radius: 4px;
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 16px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+  }
+}
+.nav-bar {
+  @include flex-css();
+  height: 74px;
+  background: linear-gradient(180deg, rgba(63, 0, 215, 0.6) 0%, #6848B5 100%);
+  margin-bottom: 20px;
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 30px;
+  line-height: 30px;
+  color: #FFFFFF;
+
+  .nav-links {
+    @include flex-css();
+    flex: 0 1 1220px;
+
+    div {
+      margin-right: 30px;
+      cursor: pointer;
+      &:hover {
+        font-weight: bold;
+      }
+    }
+
+    .last-link {
+      flex: 1 1 auto;
+    }
+
+    .settings {
+      @include flex-css();
+      font-family: Nunito;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 20px;
+      line-height: 27px;
+      color: #FFFFFF;
+      margin-right: 0;
+    }
+  }
+
+}
+
+.page-titles {
+  @include flex-css();
+
+  .title {
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 33px;
+    color: #4F4F4F;
+    flex: 1 1 auto;
+
+    .subtitle {
+      height: 41px;
+      font-family: Roboto;
+      font-style: normal;
+      font-weight: normal;
+      font-size: 16px;
+      line-height: 19px;
+      color: #000000;
+    }
+  }
+}
+
+.footer {
+  @include flex-css($direction: column);
+  height: 314px;
+  background: #5C5C5C;
+  box-shadow: 0px 10px 20px rgba(31, 32, 65, 0.05);
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 24px;
+  color: rgba(255, 255, 255, 0.75);
+  margin-top: 36px;
+}
+
+
+
+/*************** Grid View ***************/
+.grid-row {
+  @include flex-css($justify: flex-start, $align: stretch); 
+  flex: 1 1 auto;
+  height: 37px;
+  color: black;
+  font-family: Nunito, Arial, Helvetica, sans-serif;
+
+  &.header {
+    background-color: #7a57cf;
+    color: white;
+    border-top: 1px solid #ddd;
+  }
+
+  &.even {
+    background-color: #f2f2f2;
+  }
+  &.header:hover {
+    background-color: #7a57cf;
+  }
+  &:hover {
+    background-color: #ddd;
+  }
+  &> div {
+    @include flex-css($justify: flex-start);
+    padding-left: 10px;
+    border-bottom: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+  }
+  div:nth-of-type(1) {
+    flex: 0 1 61px;
+    border-left: 1px solid #ddd;
+  }
+  div:nth-of-type(2) {
+    flex: 1 1 364px;
+  }
+  div:nth-of-type(3) {
+    flex: 1 1 355px;
+  }
+  div:nth-of-type(4) {
+    flex: 1 1 138px;
+  }
+  div:nth-of-type(5) {
+    flex: 0 1 195px;
+  }
+  div:nth-of-type(6) {
+    flex: 0 1 94px;
+  }
+}
+
+
+/************ Mobile View *************/
+@media screen and (max-width: 600px) {
+  .flex-card {
+    width: 98vw;
+    margin: 10px;
+  }
+}
+
