@@ -1,6 +1,6 @@
 {
   "name": "react-suspense",
-  "homepage":"https://dev-nap-assetmanagement-webui.azure.saws.org/devmyc",
+  "homepage":"https://dev-nap-assetmanagement-webui.azure.saws.org/devmyc/build",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
