@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "https://some.azure.com/static/css/main.cd148121.chunk.css",
+    "main.js": "https://some.azure.com/static/js/main.2664983c.chunk.js",
+    "main.js.map": "https://some.azure.com/static/js/main.2664983c.chunk.js.map",
+    "runtime-main.js": "https://some.azure.com/static/js/runtime-main.a6535b1b.js",
+    "runtime-main.js.map": "https://some.azure.com/static/js/runtime-main.a6535b1b.js.map",
+    "static/js/2.783cd81e.chunk.js": "https://some.azure.com/static/js/2.783cd81e.chunk.js",
+    "static/js/2.783cd81e.chunk.js.map": "https://some.azure.com/static/js/2.783cd81e.chunk.js.map",
+    "index.html": "https://some.azure.com/index.html",
+    "precache-manifest.fe2953787832ce0161434fde11f88d6a.js": "https://some.azure.com/precache-manifest.fe2953787832ce0161434fde11f88d6a.js",
+    "service-worker.js": "https://some.azure.com/service-worker.js",
+    "static/css/main.cd148121.chunk.css.map": "https://some.azure.com/static/css/main.cd148121.chunk.css.map",
+    "static/js/2.783cd81e.chunk.js.LICENSE": "https://some.azure.com/static/js/2.783cd81e.chunk.js.LICENSE"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a6535b1b.js",
+    "static/js/2.783cd81e.chunk.js",
+    "static/css/main.cd148121.chunk.css",
+    "static/js/main.2664983c.chunk.js"
+  ]
+}

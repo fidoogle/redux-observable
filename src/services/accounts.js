@@ -21,7 +21,7 @@ const fetchBalance = async (id=0, delay=false) => {
             await sleep();
         }
         if (randomError()) {
-            throw 'Random error'
+            throw new Error('Random error');
         }
         const result = response.data.find(o => o.id === id)
         return result.balance; // if null, throw error in catch
