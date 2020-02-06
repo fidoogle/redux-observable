@@ -11,6 +11,7 @@ const PageTitle = () => {
 
     const changeHandler = (event) => {
         setEmail(event.target.value);
+        setLoginError(null);
     }
     const login = (event) => {
         event.preventDefault()
