@@ -12,10 +12,12 @@ function randomError() {
 
 const fetchBalance = async (id=0, delay=false) => {
     const url = './data/properties.json';
+    const s = '?Imhere';
+
     try {
         const response = await axios({
             method: 'get',
-            url: url
+            url: url + s
         });
         if (delay) {
             await sleep();
