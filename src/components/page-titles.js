@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-import {sendLogin} from '../services/accounts'
+import React, { useContext, useState } from 'react';
+import { StoreContext } from '../stores/store'
+import { fetchProperties, sendLogin} from '../services/accounts'
 
 
 const PageTitle = () => {
     const [email, setEmail] = useState('');
     const [resultData, setResultData] = useState(null);
     const [loginError, setLoginError] = useState(null);
+    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
+    const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext); //original global data
 
     const changeHandler = (event) => {
         setEmail(event.target.value);
@@ -14,8 +17,17 @@ const PageTitle = () => {
         event.preventDefault()
         event.stopPropagation()
         sendLogin(email).then(
-            p => {setResultData(p); console.log({resultData})}, 
-            e => {setLoginError(e); console.error({e, email})}
+            //success
+            p => {
+                setGlobalProperties(p); 
+                setGlobalPropertiesIntact(p); 
+                console.log({globalPropertiesIntact});
+            }, 
+            //error
+            e => {
+                setLoginError(e); 
+                console.error({e, email});
+            }
         )
     }
 

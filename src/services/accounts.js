@@ -64,10 +64,6 @@ const sendLogin = async (email) => {
             url: url,
             data: {
                 email
-            },
-            headers: {
-                'Ocp-Apim-Trace': true,
-                'Ocp-Apim-Subscription-Key': 'd334acadb84d48b39eca45d2bd4119ef'
             }
         });
         return response.data;
