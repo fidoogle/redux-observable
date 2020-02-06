@@ -14,7 +14,7 @@ const PageTitle = () => {
         event.preventDefault()
         event.stopPropagation()
         sendLogin(email).then(
-            p => {setResultData(p); console.log({resultData})}, 
+            p => {setResultData(p); console.log({p})}, 
             e => {setLoginError(e); console.error({e, email})}
         )
     }
