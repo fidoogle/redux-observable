@@ -1,11 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { StoreContext } from '../stores/store'
-import { fetchProperties, sendLogin} from '../services/accounts'
+import { sendLogin} from '../services/accounts'
 
 
 const PageTitle = () => {
     const [email, setEmail] = useState('');
-    const [resultData, setResultData] = useState(null);
     const [loginError, setLoginError] = useState(null);
     const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
     const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext); //original global data
