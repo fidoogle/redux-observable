@@ -55,6 +55,27 @@ const fetchProperties = async (delay=false) => {
     }
 };
 
+const sendLogin = async (email) => {
+    const url = 'https://mylogin-url.com/fidel';
+
+    try {
+        const response = await axios({
+            method: 'post',
+            url: url,
+            data: {
+                email
+            },
+            headers: {
+                'Ocp-Apim-Trace': true,
+                'Ocp-Apim-Subscription-Key': 'd334acadb84d48b39eca45d2bd4119ef'
+            }
+        });
+        return response.data;
+    } catch(e) {
+        console.error('Login failed');
+        throw e;
+    }
+};
 
 
-export { fetchBalance, fetchProperties }
+export { fetchBalance, fetchProperties, sendLogin }
