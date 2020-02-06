@@ -15,7 +15,7 @@ const PageTitle = () => {
         event.stopPropagation()
         sendLogin(email).then(
             p => {setResultData(p); console.log({resultData})}, 
-            e => {setLoginError(e); console.error({e})}
+            e => {setLoginError(e); console.error({e, email})}
         )
     }
 
@@ -29,7 +29,7 @@ const PageTitle = () => {
                     </div>
                 </div>
                 <div>
-                    { loginError && 'There was an error' }
+                    { loginError && `There was an error for ${email}` }
                     <form>
                         <input type="text" name="email" placeholder="email address" onChange={changeHandler}/>
                         <button onClick={login}>Login</button>
