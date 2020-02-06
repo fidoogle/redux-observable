@@ -20,7 +20,8 @@ const PageTitle = () => {
             //success
             p => {
                 setGlobalProperties(p); 
-                setGlobalPropertiesIntact(p); 
+                setGlobalPropertiesIntact(p);
+                setLoginError(null);
                 console.log({globalPropertiesIntact});
             }, 
             //error
