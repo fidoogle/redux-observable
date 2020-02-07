@@ -12,12 +12,11 @@ function randomError() {
 
 const fetchBalance = async (id=0, delay=false) => {
     const url = './data/properties.json';
-    const s = '?Imhere';
-
+    
     try {
         const response = await axios({
             method: 'get',
-            url: url + s
+            url: url
         });
         if (delay) {
             await sleep();
@@ -56,16 +55,23 @@ const fetchProperties = async (delay=false) => {
 };
 
 const sendLogin = async (email) => {
-    const url = 'https://mylogin-url.com/fidel';
+    const url = `https://localhost:44382/api/getuserbyemail/${email}`;
 
     try {
+        console.log(email);
         const response = await axios({
-            method: 'post',
+            method: 'get',
             url: url,
-            data: {
-                email
+            crossdmomain:true,
+            data:{
+                emailAddress: email
+            },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
             }
         });
+        console.log(response.data);
         return response.data;
     } catch(e) {
         console.error('Login failed');
