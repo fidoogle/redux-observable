@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import { StoreContext } from '../stores/store'
 import { fetchUserAccounts, sendLogin } from '../services/accounts'
 import CircularProgress from '@material-ui/core/CircularProgress'
-
+import { get } from 'lodash'
 
 const PageTitle = () => {
     const [email, setEmail] = useState('');
@@ -24,24 +24,28 @@ const PageTitle = () => {
             p => {
                 setLoginError(null)
                 setLoadingLogin(false)
-                fetchUserAccounts(p.userx52id).then(
+                fetchUserAccounts(get(p, 'userx52id', null)).then(
                     //success
                     p => {
                         setGlobalProperties(p); 
                         setGlobalPropertiesIntact(p);
                     },
                     //error
-                    e => {console.error('error getting accounts', {e})}
-                ).catch((e) => { throw e})
+                    e => {
+                        console.error('error getting accounts', {e})
+                        throw e
+                    }
+                ).catch((e) => { handleError(e) })
 
             }, 
             //error
-            e => {
-                setLoginError(e)
-                setLoadingLogin(false)
-                console.error({e, email})
-            }
+            e => { handleError(e) }
         )
+    }
+    const handleError = (e) => {
+        setLoginError(e)
+        setLoadingLogin(false)
+        console.error({e, email})
     }
 
     return (

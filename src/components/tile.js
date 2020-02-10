@@ -22,43 +22,33 @@ import red from '@material-ui/core/colors/red';
 
 
 function Tile({property}) {
-    const [balances, setBalances] = useState(null);
+    const [balancesLocal, setBalancesLocal] = useState(null); //local to this component instance
     const [balanceError, setBalancesError] = useState(null);
     const [refreshThis, setRefreshThis] = useState(null);
-    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
-    const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext); //original global data
+    const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
 
     useLayoutEffect(() => {
         setBalancesError(null)
         if (get(property, 'accountkey', null)) {
-            fetchAccountBalances(property.accountkey).then(
-                p => {
-                    setBalances(p); 
-                    mergeAccountBalances(property.accountkey, p)
-                }, // TODO merge into global properties store
-                e => {setBalancesError(e)}
-            ).catch( e => { throw e; setBalancesError(e); })
+            if (!balances.get(property.accountkey)) {
+                fetchAccountBalances(property.accountkey).then(
+                    p => {
+                        updateBalancesMap(property.accountkey, p)
+                        setBalancesLocal(p); 
+                    }, // TODO merge into global properties store
+                    e => {setBalancesError(e)}
+                ).catch( e => { throw e; setBalancesError(e); })
+            } else {
+                setBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
+            }
+        } else {
+            setBalancesError(new Error('missing [property or accountkey'));
         }
     }, [property, refreshThis]);
 
     
-    const mergeAccountBalances = (accountkey, balances) => {
-        //Original
-        let foundIndex = globalPropertiesIntact.findIndex( o => o.accountkey == accountkey )
-        if (foundIndex!==-1) {
-            let newObj = {...globalPropertiesIntact[foundIndex], ...balances} //creates new object with original values plus the new balances
-            let temp = [...globalPropertiesIntact] //clones globalPropertiesIntact
-            temp.splice(foundIndex, 1, newObj) //replaces object at globalPropertiesIntact[foundIndex] with newObj
-            setGlobalPropertiesIntact(temp)
-        }
-        //Working
-        foundIndex = globalProperties.findIndex( o => o.accountkey == accountkey )
-        if (foundIndex!==-1) {
-            let newObj = {...globalProperties[foundIndex], ...balances} //creates new object with original values plus the new balances
-            let temp = [...globalProperties] //clones globalPropertiesIntact
-            temp.splice(foundIndex, 1, newObj) //replaces object at globalPropertiesIntact[foundIndex] with newObj
-            setGlobalProperties(temp)
-        }
+    const updateBalancesMap = (k,v) => {
+        setBalances(balances.set(k,v)); //if we need re-render for updates to entire Map, use setBalances(new Map(balances.set(k,v)));
     }
 
     var randomScalingFactor = function() {
@@ -88,7 +78,7 @@ function Tile({property}) {
     return (
         <div className="flex-card">
                 <div className="flex-card-column clip">
-                    <div className="account clip">Account #: {property.acctnum}</div>
+                    <div className="account clip">Account #: {property.acctnumber}</div>
                     <div className="address">{property.address}</div>
                     <div className="balance clip">
                         {
@@ -102,8 +92,8 @@ function Tile({property}) {
                                 </Tooltip>
                                 </div>
                             :
-                                (balances ?
-                                    '$'+balances.activebalance+' Due'
+                                (balancesLocal ?
+                                    '$'+balancesLocal.activebalance+' Due'
                                 : 
                                     <Skeleton variant="rect" width={200} height={44}/>
                                 )
