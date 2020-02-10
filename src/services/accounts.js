@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const MIN_FETCH_TIME = 2500;
+const MIN_FETCH_TIME = 500;
 function sleep(t = MIN_FETCH_TIME) {
     t = Math.random() * t + MIN_FETCH_TIME
     return new Promise(resolve => setTimeout(resolve, t))
@@ -67,7 +67,10 @@ const fetchAccountBalances = async (accountKey) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log('balances: ', {response});
+        if (randomError()) {
+            throw new Error('Random error');
+        }
+        console.log('activebalance: ', response.data.activebalance);
         return response.data;
     } catch(e) {
         console.error(`getbalance failed for ${accountKey}`);
