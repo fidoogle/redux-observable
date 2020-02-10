@@ -23,32 +23,40 @@ import red from '@material-ui/core/colors/red';
 
 function Tile({property}) {
     const [balancesLocal, setBalancesLocal] = useState(null); //local to this component instance
-    const [balanceError, setBalancesError] = useState(null);
+    const [balancesError, setBalancesError] = useState(null);
     const [refreshThis, setRefreshThis] = useState(null);
     const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
 
     useLayoutEffect(() => {
         setBalancesError(null)
         if (get(property, 'accountkey', null)) {
-            if (!balances.get(property.accountkey)) {
+            if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
                 fetchAccountBalances(property.accountkey).then(
-                    p => {
+                    p => {console.log('acctnumber:', property.acctnumber, {p})
                         updateBalancesMap(property.accountkey, p)
-                        setBalancesLocal(p); 
-                    }, // TODO merge into global properties store
-                    e => {setBalancesError(e)}
-                ).catch( e => { throw e; setBalancesError(e); })
+                        updateBalancesLocal(p) //triggers re-render of this component instance only
+                    },
+                    e => { throw e }
+                ).catch( e => { setBalancesError(e) })
             } else {
-                setBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
+                updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
             }
         } else {
-            setBalancesError(new Error('missing [property or accountkey'));
+            setBalancesError(new Error('missing [property or accountkey'))
         }
     }, [property, refreshThis]);
 
     
     const updateBalancesMap = (k,v) => {
         setBalances(balances.set(k,v)); //if we need re-render for updates to entire Map, use setBalances(new Map(balances.set(k,v)));
+    }
+    const updateBalancesLocal = (p) => {
+        if (balances.get(property.accountkey)['activebalance'] || balances.get(property.accountkey)['activebalance']===0) {
+            setBalancesError(null)
+            setBalancesLocal(p); //triggers re-render of this component instance only
+        } else {
+            setBalancesError(new Error('activebalance is undefined'));
+        }
     }
 
     var randomScalingFactor = function() {
@@ -82,7 +90,7 @@ function Tile({property}) {
                     <div className="address">{property.address}</div>
                     <div className="balance clip">
                         {
-                            balanceError ?
+                            balancesError ?
                                 <div className="retry" onClick={(e) => setRefreshThis(Math.random)}>
                                 <Tooltip title="Failed to load. Click to retry.">
                                     <span>
