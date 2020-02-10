@@ -1,5 +1,7 @@
 import React, { useContext, useLayoutEffect, useState } from 'react'
-import {fetchBalance} from '../services/accounts'
+import { StoreContext } from '../stores/store'
+import { get } from 'lodash'
+import { fetchAccountBalances, fetchBalance } from '../services/accounts'
 import Doughnut from './doughnut'
 import Status from './status'
 
@@ -20,17 +22,44 @@ import red from '@material-ui/core/colors/red';
 
 
 function Tile({property}) {
-    const [balance, setBalance] = useState(null);
-    const [balanceError, setBalanceError] = useState(null);
+    const [balances, setBalances] = useState(null);
+    const [balanceError, setBalancesError] = useState(null);
     const [refreshThis, setRefreshThis] = useState(null);
+    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
+    const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext); //original global data
 
     useLayoutEffect(() => {
-        setBalanceError(null)
-        fetchBalance(property.id, true).then(
-            p => {setBalance(p)}, // TODO merge into global properties store
-            e => {setBalanceError(e)}
-        )
-    }, [refreshThis]);
+        setBalancesError(null)
+        if (get(property, 'accountkey', null)) {
+            fetchAccountBalances(property.accountkey).then(
+                p => {
+                    setBalances(p); 
+                    mergeAccountBalances(property.accountkey, p)
+                }, // TODO merge into global properties store
+                e => {setBalancesError(e)}
+            ).catch( e => { throw e; setBalancesError(e); })
+        }
+    }, [property, refreshThis]);
+
+    
+    const mergeAccountBalances = (accountkey, balances) => {
+        //Original
+        let foundIndex = globalPropertiesIntact.findIndex( o => o.accountkey == accountkey )
+        if (foundIndex!==-1) {
+            let newObj = {...globalPropertiesIntact[foundIndex], ...balances} //creates new object with original values plus the new balances
+            let temp = [...globalPropertiesIntact] //clones globalPropertiesIntact
+            temp.splice(foundIndex, 1, newObj) //replaces object at globalPropertiesIntact[foundIndex] with newObj
+            setGlobalPropertiesIntact(temp)
+        }
+        //Working
+        foundIndex = globalProperties.findIndex( o => o.accountkey == accountkey )
+        if (foundIndex!==-1) {
+            let newObj = {...globalProperties[foundIndex], ...balances} //creates new object with original values plus the new balances
+            let temp = [...globalProperties] //clones globalPropertiesIntact
+            temp.splice(foundIndex, 1, newObj) //replaces object at globalPropertiesIntact[foundIndex] with newObj
+            setGlobalProperties(temp)
+        }
+    }
 
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
@@ -59,7 +88,7 @@ function Tile({property}) {
     return (
         <div className="flex-card">
                 <div className="flex-card-column clip">
-                    <div className="account clip">Account #: 300104859-1938391-8238</div>
+                    <div className="account clip">Account #: {property.acctnum}</div>
                     <div className="address">{property.address}</div>
                     <div className="balance clip">
                         {
@@ -73,8 +102,8 @@ function Tile({property}) {
                                 </Tooltip>
                                 </div>
                             :
-                                (balance ?
-                                    '$'+balance+' Due'
+                                (balances ?
+                                    '$'+balances.activebalance+' Due'
                                 : 
                                     <Skeleton variant="rect" width={200} height={44}/>
                                 )
