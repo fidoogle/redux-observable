@@ -1,5 +1,7 @@
 import React, { useContext, useLayoutEffect, useState } from 'react'
-import {fetchBalance} from '../services/accounts'
+import { StoreContext } from '../stores/store'
+import { get } from 'lodash'
+import { fetchAccountBalances, fetchBalance } from '../services/accounts'
 import Doughnut from './doughnut'
 import Status from './status'
 
@@ -20,17 +22,34 @@ import red from '@material-ui/core/colors/red';
 
 
 function Tile({property}) {
-    const [balance, setBalance] = useState(null);
-    const [balanceError, setBalanceError] = useState(null);
+    const [balancesLocal, setBalancesLocal] = useState(null); //local to this component instance
+    const [balanceError, setBalancesError] = useState(null);
     const [refreshThis, setRefreshThis] = useState(null);
+    const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
 
     useLayoutEffect(() => {
-        setBalanceError(null)
-        fetchBalance(property.id, true).then(
-            p => {setBalance(p)}, // TODO merge into global properties store
-            e => {setBalanceError(e)}
-        )
-    }, [refreshThis]);
+        setBalancesError(null)
+        if (get(property, 'accountkey', null)) {
+            if (!balances.get(property.accountkey)) {
+                fetchAccountBalances(property.accountkey).then(
+                    p => {
+                        updateBalancesMap(property.accountkey, p)
+                        setBalancesLocal(p); 
+                    }, // TODO merge into global properties store
+                    e => {setBalancesError(e)}
+                ).catch( e => { throw e; setBalancesError(e); })
+            } else {
+                setBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
+            }
+        } else {
+            setBalancesError(new Error('missing [property or accountkey'));
+        }
+    }, [property, refreshThis]);
+
+    
+    const updateBalancesMap = (k,v) => {
+        setBalances(balances.set(k,v)); //if we need re-render for updates to entire Map, use setBalances(new Map(balances.set(k,v)));
+    }
 
     var randomScalingFactor = function() {
         return Math.round(Math.random() * 100);
@@ -59,7 +78,7 @@ function Tile({property}) {
     return (
         <div className="flex-card">
                 <div className="flex-card-column clip">
-                    <div className="account clip">Account #: 300104859-1938391-8238</div>
+                    <div className="account clip">Account #: {property.acctnumber}</div>
                     <div className="address">{property.address}</div>
                     <div className="balance clip">
                         {
@@ -73,8 +92,8 @@ function Tile({property}) {
                                 </Tooltip>
                                 </div>
                             :
-                                (balance ?
-                                    '$'+balance+' Due'
+                                (balancesLocal ?
+                                    '$'+balancesLocal.activebalance+' Due'
                                 : 
                                     <Skeleton variant="rect" width={200} height={44}/>
                                 )
