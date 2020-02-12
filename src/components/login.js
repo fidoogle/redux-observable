@@ -1,31 +1,82 @@
-import React, {useState} from 'react';
+import React, { useContext, useState } from 'react';
+import { StoreContext } from '../stores/store'
+import { fetchUserAccounts, sendLogin } from '../services/accounts'
+import { get } from 'lodash'
+
 import { TextField } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import PersonIcon from '@material-ui/icons/Person';
 import CircularProgress from '@material-ui/core/CircularProgress'
 
+import {
+        BrowserRouter as Router,
+        Switch,
+        Route,
+        Link,
+        Redirect,
+        useHistory,
+        useLocation
+    } from "react-router-dom";
+
+const DEFAULT_LOGIN = 'sawsdev-mcastillo@saisd.net'
+
 const Login = () => {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [pending, setPending] = useState(false);
+    const [username, setUsername] = useState(DEFAULT_LOGIN);
+    const [loginError, setLoginError] = useState(null);
+    const [loadingLogin, setLoadingLogin] = useState(false);
+    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
+    const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext); //original global data
+    let history = useHistory();
 
-    const fakeAuth = {
-        isAuthenticated: false,
-        authenticate(cb) {
-            this.isAuthenticated = true
-            setTimeout(cb, 100)
-        },
-        signout(cb) {
-            this.isAuthenticated = false
-            setTimeout(cb, 100)
-        }
+    // const fakeAuth = {
+    //     isAuthenticated: false,
+    //     authenticate(cb) {
+    //         this.isAuthenticated = true
+    //         setTimeout(cb, 100)
+    //     },
+    //     signout(cb) {
+    //         this.isAuthenticated = false
+    //         setTimeout(cb, 100)
+    //     }
+    // }
+
+    const changeHandler = (event) => {
+        setUsername(event.target.value)
+        console.log({username})
+        setLoginError(null)
     }
+    const login = (event) => { //Sample login: sawsdev-mcastillo@saisd.net
+        event.preventDefault()
+        event.stopPropagation()
+        setLoadingLogin(true)
+        sendLogin(username).then(
+            //success
+            p => {
+                setLoginError(null)
+                setLoadingLogin(false)
+                fetchUserAccounts(get(p, 'userx52id', null)).then(
+                    //success
+                    p => {
+                        setGlobalProperties(p); 
+                        setGlobalPropertiesIntact(p);
+                        history.replace({ pathname: '/app'});
+                    },
+                    //error
+                    e => {
+                        console.error('error getting accounts', {e})
+                        throw e
+                    }
+                ).catch((e) => { handleError(e) })
 
-    const signIn = (e) => {
-        e.stopPropagation()
-        setPending(true)
-        fakeAuth.authenticate(() => {
-
-        })
+            }, 
+            //error
+            e => { handleError(e) }
+        )
+    }
+    const handleError = (e) => {
+        setLoginError(e)
+        setLoadingLogin(false)
+        console.error({e, username})
     }
 
     return (
@@ -42,9 +93,10 @@ const Login = () => {
             <div className="box">
                 <div><TextField
                     id="username"
-                    defaultValue="sawsdev-mcastillo@saisd.net"
+                    defaultValue={DEFAULT_LOGIN}
                     label="Username"
                     fullWidth={true}
+                    name="username"
                     placeholder="Type here..."
                     variant="outlined"
                     InputProps={{
@@ -54,6 +106,7 @@ const Login = () => {
                             </InputAdornment>
                         )
                     }}
+                    onChange={changeHandler}
                     />
                 </div>
                 <div><TextField
@@ -72,9 +125,10 @@ const Login = () => {
                     }}
                     />
                 </div>
-                <div className="sign-in-button" onClick={(e) => {signIn(e)}}>
+                <div>{ loginError && `There was an error for ${username}` }</div>
+                <div className="sign-in-button" onClick={(e) => {login(e)}}>
                     <div>{
-                            pending? 
+                            (!loginError && loadingLogin)? 
                             <CircularProgress size={20}/>
                             :
                             <span>Sign In</span>

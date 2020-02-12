@@ -19,8 +19,6 @@ $color: #efefef;
   align-items: $align;
 }
 
-
-
 body {
   @include flex-css($direction: column, $justify: flex-start );
 }
@@ -86,7 +84,6 @@ body > div {
   border-radius: 4px;
 }
 .flex-card {
-  @include flex-css($justify: space-between, $align: flex-start);
   width: $box-size;
   height: $box-size-2;
   margin: 10px;
@@ -96,9 +93,58 @@ body > div {
   box-shadow: 0px 10px 20px rgba(31, 32, 65, 0.05);
   border-radius: 4px;
 }
+
+.address {
+  font-family: Quicksand;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 19px;
+  line-height: 24px;
+  color: #1F2041;
+}
+.gallons {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 42px;
+  line-height: 57px;
+  color: #279A2C;
+}
+.from-last-month {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 19px;
+  line-height: 26px;
+  color: #1F2041;
+  margin-right: 20px;
+  margin-top: 15px;
+}
+.trend-chart {
+  background-color: yellowgreen;
+  height: 60px;
+  width: 100%;
+  margin-bottom: 10px;
+}
+.usage-trend {
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 19px;
+  line-height: 26px;
+  color: #1F2041;
+}
+.flex-card-row {
+  @include flex-css($justify: space-between, $align: flex-start);
+}
 .flex-card-column {
   @include flex-css($direction: column, $justify: space-between, $align: flex-start);
   height: 100%;
+
+  &.center {
+    justify-content: center;
+    align-items: center;
+  }
 
   &.right {
     align-items: flex-end;
@@ -111,14 +157,6 @@ body > div {
     font-size: 10px;
     line-height: 11px;
     color: #4F4F4F;
-  }
-  .address {
-    font-family: Quicksand;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 19px;
-    line-height: 24px;
-    color: #1F2041;
   }
   .balance {
     font-family: Nunito;
@@ -169,6 +207,7 @@ body > div {
       }
     }
   }
+  
 } /* flex-card-column*/
 
 
@@ -192,6 +231,7 @@ body > div {
   line-height: 11px;
   color: red;
   cursor: pointer;
+  height: 60px;
 }
 .status {
   height: 24px;
@@ -346,6 +386,9 @@ body > div {
         font-weight: bold;
       }
     }
+    div.active {
+      font-weight: bold;
+    }
 
     .last-link {
       flex: 1 1 auto;
@@ -453,6 +496,165 @@ body > div {
   div:nth-of-type(6) {
     flex: 0 1 94px;
   }
+}
+
+
+/************ Payment View *************/
+.pay-card-parent {
+  position: relative;
+}
+.pay-card {
+  background-color: #269a2b;
+  opacity: .6;
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 36px;
+  line-height: 49px;
+  color: #FFFFFF;
+  z-index: 10;
+  cursor: pointer;
+}
+.pay-card-content {
+  opacity: 1;
+}
+.pay-buttons {
+  @include flex-css();
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 28px;
+  color: #FFFFFF;
+  margin-top: 20px;
+
+  .all {
+    @include flex-css();
+    width: 384px;
+    height: 66px;
+    background: #FF7200;
+    border-radius: 4px;
+    margin: 10px;
+    cursor: pointer;
+  }
+
+  .multiple {
+    @include flex-css();
+    width: 384px;
+    height: 66px;
+    background: #521AD8;
+    box-shadow: 1px 1px 30px rgba(104, 72, 181, 0.84);
+    border-radius: 4px;
+    margin: 10px;
+    cursor: pointer;
+  }
+}
+
+
+
+/*************** Login *****************/
+.login {
+  @include flex-css($direction: column, $justify: space-around);
+  background-image: url("/BG.png");
+  background-color: rgba(63, 0, 215, 0.6); /* Used if the image is unavailable */
+  background-position: center; 
+  background-repeat: no-repeat;
+  background-size: cover; /* Resize the background image to cover the entire container */
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+
+  .overlay {
+    background-color: rgba(63, 0, 215, 0.6);
+    opacity: .9;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    top:0;
+    left:0;
+    z-index: 2;
+  }
+
+  .title {
+    @include flex-css();
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 72px;
+    line-height: 98px;
+    margin-top: 100px;
+    color: #FFFFFF;
+    position: relative;
+    z-index: 3;
+
+    .spacer {
+      padding: 80px;
+    }
+  }
+
+  .box {
+    @include flex-css($direction: column, $justify: space-around, $align: stretch);
+    width: 422px;
+    height: 382px;
+    padding: 30px;
+    background: #FFFFFF;
+    border-radius: 4px;
+    position: relative;
+    z-index: 3;
+
+    .sign-in-button {
+      @include flex-css();
+      width: 216px;
+      height: 44px;
+      background: #FF8522;
+      border-radius: 4px;
+      font-family: Nunito;
+      font-style: normal;
+      font-weight: bold;
+      font-size: 12px;
+      line-height: 16px;
+      text-transform: uppercase;
+      color: #FFFFFF;
+      margin: 0 auto;
+      cursor: pointer;
+    }
+
+    .terms {
+      width: 320px;
+      height: 47px;
+      font-family: Nunito;
+      font-style: normal;
+      font-weight: 300;
+      font-size: 10px;
+      line-height: 14px;
+      display: flex;
+      align-items: center;
+      text-align: center;
+      text-transform: uppercase;
+      color: #000000;
+      margin: 0 auto;
+    }
+  }
+
+  .bottom {
+    @include flex-css($direction: column);
+    font-family: Nunito;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 26px;
+    line-height: 35px;
+    margin-bottom: 50px;
+    color: #FFFFFF;
+    position: relative;
+    z-index: 3;
+  }
+
+
+
+
 }
 
 
