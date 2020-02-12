@@ -79,7 +79,7 @@ const fetchAccountBalances = async (accountKey) => {
 }
 
 const fetchUserAccounts = async (accountID) => {
-    const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getuseraccounts/${accountID}`;
+    const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuseraccounts/${accountID}`;
 
     try {
         console.log({accountID});
@@ -101,7 +101,7 @@ const fetchUserAccounts = async (accountID) => {
 }
 
 const sendLogin = async (email) => {
-    const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getuserbyemail/${email}`;
+    const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuserbyemail/${email}`;
 
     try {
         console.log(email);
