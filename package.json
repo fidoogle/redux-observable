@@ -1,6 +1,6 @@
 {
   "name": "react-suspense",
-  "homepage":"https://dev-nap-assetmanagement-webui.azure.saws.org/devmyc/build",
+  "homepage": "https://dev-nap-assetmanagement-webui.azure.saws.org/devmyc/build",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^7.2.1",
     "axios": "^0.19.2",
     "chart.js": "^2.9.3",
+    "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
     "react": "^16.12.0",
     "react-chartjs-2": "^2.9.0",

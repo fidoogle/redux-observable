@@ -37,8 +37,8 @@ const Tiles = (props) => {
                             :
                             properties.length ?
                             properties.map((o) => 
-                                <div key={o.id}>
-                                    <Tile property={o} key={o.id}/>
+                                <div key={o.useraccountid}>
+                                    <Tile property={o} key={o.useraccountid}/>
                                 </div>
                             )
                             : 

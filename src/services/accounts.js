@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const MIN_FETCH_TIME = 2500;
+const MIN_FETCH_TIME = 500;
 function sleep(t = MIN_FETCH_TIME) {
     t = Math.random() * t + MIN_FETCH_TIME
     return new Promise(resolve => setTimeout(resolve, t))
@@ -12,12 +12,11 @@ function randomError() {
 
 const fetchBalance = async (id=0, delay=false) => {
     const url = './data/properties.json';
-    const s = '?Imhere';
-
+    
     try {
         const response = await axios({
             method: 'get',
-            url: url + s
+            url: url
         });
         if (delay) {
             await sleep();
@@ -55,6 +54,76 @@ const fetchProperties = async (delay=false) => {
     }
 };
 
+const fetchAccountBalances = async (accountKey) => {
+    const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getbalance/${accountKey}`;
+
+    try {
+        const response = await axios({
+            method: 'get',
+            url: url,
+            crossdmomain:true,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        if (randomError()) {
+            throw new Error('Random error');
+        }
+        console.log('activebalance: ', response.data.activebalance);
+        return response.data;
+    } catch(e) {
+        console.error(`getbalance failed for ${accountKey}`);
+        throw e;
+    }
+}
+
+const fetchUserAccounts = async (accountID) => {
+    const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getuseraccounts/${accountID}`;
+
+    try {
+        console.log({accountID});
+        const response = await axios({
+            method: 'get',
+            url: url,
+            crossdmomain:true,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('accounts:', {response});
+        return response.data;
+    } catch(e) {
+        console.error(`getuseraccounts failed for ${accountID}`);
+        throw e;
+    }
+}
+
+const sendLogin = async (email) => {
+    const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getuserbyemail/${email}`;
+
+    try {
+        console.log(email);
+        const response = await axios({
+            method: 'get',
+            url: url,
+            crossdmomain:true,
+            data:{
+                emailAddress: email
+            },
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log({response});
+        return response.data;
+    } catch(e) {
+        console.error(`Login failed for ${email}`);
+        throw e;
+    }
+};
 
 
-export { fetchBalance, fetchProperties }
+export { fetchAccountBalances, fetchBalance, fetchProperties, fetchUserAccounts, sendLogin }
