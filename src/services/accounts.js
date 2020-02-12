@@ -24,7 +24,7 @@ const fetchBalance = async (id=0, delay=false) => {
         if (randomError()) {
             throw new Error('Random error');
         }
-        const result = response.data.find(o => o.id === id)
+        const result = response.data.find(o => o.useraccountid === id)
         return result.balance; // if null, throw error in catch
     } catch(e) {
         console.error('Request for fetchBalance failed');

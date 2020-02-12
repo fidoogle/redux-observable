@@ -1,7 +1,7 @@
 import React, { useContext, useLayoutEffect, useState } from 'react'
 import { StoreContext } from '../stores/store'
 import { get } from 'lodash'
-import { fetchAccountBalances, fetchBalance } from '../services/accounts'
+import { fetchAccountBalances } from '../services/accounts'
 import Doughnut from './doughnut'
 import Status from './status'
 

@@ -40,12 +40,12 @@ const Tiles = (props) => {
                             :
                             properties.length ?
                             properties.map((o) => 
-                                <div key={o.id} className="pay-card-parent">
+                                <div key={o.useraccountid} className="pay-card-parent">
                                     <ReactCardFlip isFlipped={dataApp.isFlipped} flipDirection="horizontal">
-                                        <CardBalance property={o} key={o.id}/>
-                                        <CardUsage property={o} key={o.id}/>
+                                        <CardBalance property={o} key={o.useraccountid}/>
+                                        <CardUsage property={o} key={o.useraccountid}/>
                                     </ReactCardFlip>
-                                    <CardPay id={o.id}/>
+                                    <CardPay id={o.useraccountid}/>
                                 </div>
                             )
                             : 

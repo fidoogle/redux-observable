@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { StoreContext } from '../stores/store'
-import {fetchBalance} from '../services/accounts'
+import { get } from 'lodash'
+import {fetchAccountBalances} from '../services/accounts'
 import Doughnut from './doughnut'
 import Status from './status'
 
@@ -21,23 +22,47 @@ import red from '@material-ui/core/colors/red';
 
 
 function CardBalance({property}) {
-    const [balance, setBalance] = useState(null);
-    const [balanceError, setBalanceError] = useState(null);
+    const [balancesLocal, setBalancesLocal] = useState(null); //local to this component instance
+    const [balancesError, setBalancesError] = useState(null);
     const [refreshThis, setRefreshThis] = useState(null);
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
+    const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
 
     useEffect(() => {
-        setBalanceError(null)
-        fetchBalance(property.id, true).then(
-            p => {setBalance(p)}, // TODO merge into global properties store
-            e => {setBalanceError(e)}
-        )
-    }, [refreshThis]);
-
+        setBalancesError(null)
+        if (get(property, 'accountkey', null)) {
+            if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
+                fetchAccountBalances(property.accountkey).then(
+                    p => {console.log('acctnumber:', property.acctnumber, {p})
+                        updateBalancesMap(property.accountkey, p)
+                        updateBalancesLocal(p) //triggers re-render of this component instance only
+                    },
+                    e => { throw e }
+                ).catch( e => { setBalancesError(e) })
+            } else {
+                updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
+            }
+        } else {
+            setBalancesError(new Error('missing [property or accountkey'))
+        }
+    }, [property, refreshThis]);
+    
     const clickCard = (e) => {
         e.stopPropagation()
         if (dataApp.activeLink==='payment') {
-            setDataApp({...dataApp, payMultiple: [...dataApp.payMultiple, property.id]})
+            setDataApp({...dataApp, payMultiple: [...dataApp.payMultiple, property.useraccountid]})
+        }
+    }
+    
+    const updateBalancesMap = (k,v) => {
+        setBalances(balances.set(k,v)); //if we need re-render for updates to entire Map, use setBalances(new Map(balances.set(k,v)));
+    }
+    const updateBalancesLocal = (p) => {
+        if (balances.get(property.accountkey)['activebalance'] || balances.get(property.accountkey)['activebalance']===0) {
+            setBalancesError(null)
+            setBalancesLocal(p); //triggers re-render of this component instance only
+        } else {
+            setBalancesError(new Error('activebalance is undefined'));
         }
     }
 
@@ -69,11 +94,11 @@ function CardBalance({property}) {
         <div className={`flex-card ${(dataApp.activeLink==='payment') ? "pointer" : ""}`} onClick={(e) => {clickCard(e)}}>
             <div className="flex-card-row">
                 <div className="flex-card-column clip">
-                    <div className="account clip">Account #: 300104859-1938391-8238</div>
+                    <div className="account clip">Account #: {property.acctnumber}</div>
                     <div className="address">{property.address}</div>
                     <div className="balance clip">
                         {
-                            balanceError ?
+                            balancesError ?
                                 <div className="retry" onClick={(e) => setRefreshThis(Math.random)}>
                                 <Tooltip title="Failed to load. Click to retry.">
                                     <span>
@@ -83,8 +108,8 @@ function CardBalance({property}) {
                                 </Tooltip>
                                 </div>
                             :
-                                (balance ?
-                                    '$'+balance+' Due'
+                                (balancesLocal ?
+                                    '$'+balancesLocal.activebalance+' Due'
                                 : 
                                     <Skeleton variant="rect" width={200} height={44}/>
                                 )
