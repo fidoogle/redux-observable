@@ -27,7 +27,7 @@ const Account = {
             if (randomError()) {
                 throw new Error('Random error');
             }
-            console.log('activebalance: ', response.data.activebalance);
+            //console.log('activebalance: ', response.data.activebalance);
             return response.data;
         } catch(e) {
             console.error(`getbalance failed for ${accountKey}`);

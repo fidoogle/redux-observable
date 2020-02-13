@@ -11,7 +11,7 @@ const CardUsage = ({property}) => {
     const clickCard = (e) => {
         e.stopPropagation()
         if (dataApp.activeLink==='payment') {
-            setDataApp({...dataApp, payMultiple: [...dataApp.payMultiple, property.useraccountid]})
+            setDataApp({...dataApp, payMultiple: [...dataApp.payMultiple, property.accountkey]})
         }
     }
 

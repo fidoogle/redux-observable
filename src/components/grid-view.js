@@ -34,7 +34,7 @@ const GridView = ({properties}) => {
             </div>
             {properties.length &&
                 properties.map((o, index) => 
-                    <React.Fragment key={o.useraccountid}>
+                    <React.Fragment key={o.accountkey}>
                         <ReactCardFlip isFlipped={dataApp.isFlipped} flipDirection="vertical">
                             <GridBalance property={o} index={index+1}/>
                             <GridUsage property={o} index={index+1}/>

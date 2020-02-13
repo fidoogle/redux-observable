@@ -34,7 +34,7 @@ function CardBalance({property}) {
         if (get(property, 'accountkey', null)) {
             if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
                 Services.Account.fetchAccountBalances(property.accountkey).then(
-                    p => {console.log('acctnumber:', property.acctnumber, {p})
+                    p => {//console.log('acctnumber:', property.acctnumber, {p})
                         updateBalancesMap(property.accountkey, p)
                         updateBalancesLocal(p) //triggers re-render of this component instance only
                     },
@@ -51,7 +51,7 @@ function CardBalance({property}) {
     const clickCard = (e) => {
         e.stopPropagation()
         if (dataApp.activeLink==='payment') {
-            setDataApp({...dataApp, payMultiple: [...dataApp.payMultiple, property.useraccountid]})
+            setDataApp({...dataApp, payMultiple: [...dataApp.payMultiple, property.accountkey]})
         }
     }
     
