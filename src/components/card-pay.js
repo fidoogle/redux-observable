@@ -8,14 +8,14 @@ const CardPay = ({id}) => {
 
     const removeFromPay = (e) => {
         e.stopPropagation()
-        const filtered = dataApp.payMultiple.filter(num => num!==id)
-        setDataApp({...dataApp, payMultiple: filtered})
+        const filtered = dataApp.paySelected.filter(num => num!==id)
+        setDataApp({...dataApp, paySelected: filtered})
     }
 
     return (
         <>
             {
-                dataApp.activeLink==='payment' && includes(dataApp.payMultiple, id) &&
+                dataApp.activeLink==='payment' && includes(dataApp.paySelected, id) &&
                 <div className="flex-card pay-card"
                     onClick={(e) => {removeFromPay(e)}}>
                     <div className="flex-card-column center pay-card-content">

@@ -20,7 +20,7 @@ export default ({ children }) => {
         isFlipped: false, //flip card around
         oneChart: null,
         oneOverlay: null,
-        payMultiple: [], //keys are accountkey
+        paySelected: [], //keys are accountkey
         selectedAccount: accountNumbers[0], //can be set to first accountNumber after they load
         viewAs: 'tiles',
     }

@@ -9,9 +9,9 @@ const PayButtons = () => {
         e.stopPropagation()
         if (setAll) {
             const selected = globalProperties.map( o => o.accountkey)
-            setDataApp({...dataApp, payMultiple: selected})
+            setDataApp({...dataApp, paySelected: selected})
         } else {
-            setDataApp({...dataApp, payMultiple: []})
+            setDataApp({...dataApp, paySelected: []})
         }
     }
 

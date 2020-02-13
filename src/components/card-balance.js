@@ -51,7 +51,7 @@ function CardBalance({property}) {
     const clickCard = (e) => {
         e.stopPropagation()
         if (dataApp.activeLink==='payment') {
-            setDataApp({...dataApp, payMultiple: [...dataApp.payMultiple, property.accountkey]})
+            setDataApp({...dataApp, paySelected: [...dataApp.paySelected, property.accountkey]})
         }
     }
     
