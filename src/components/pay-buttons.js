@@ -3,15 +3,19 @@ import { StoreContext } from '../stores/store'
 
 const PayButtons = () => {
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
-    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
+    const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext);
+    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext);
 
     const selectAll = (e, setAll) => {
         e.stopPropagation()
         if (setAll) {
-            const selected = globalProperties.map( o => o.accountkey)
-            setDataApp({...dataApp, paySelected: selected})
+            let newMap = new Map()
+            globalProperties.forEach(item => { //TODO: there may be a faster way to create Map from globalProperties
+                newMap.set(item.accountkey, item)
+            })
+            setPaySelected(newMap)
         } else {
-            setDataApp({...dataApp, paySelected: []})
+            setPaySelected(new Map()) //clears all by creating new Map
         }
     }
 

@@ -7,12 +7,17 @@ import SparklineChart from './sparkline-chart'
 
 const CardUsage = ({property}) => {
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
+    const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext); //global
 
     const clickCard = (e) => {
         e.stopPropagation()
         if (dataApp.activeLink==='payment') {
-            setDataApp({...dataApp, paySelected: [...dataApp.paySelected, property.accountkey]})
+            updatePaySelectedMap(property.accountkey, property) //TODO: may reduce what we store in each selected property
         }
+    }
+
+    const updatePaySelectedMap = (k,v) => {
+        setPaySelected(paySelected.set(k,v)); //if we need re-render for updates to entire Map, use setPaySelected(new Map(paySelected.set(k,v)));
     }
 
     return (

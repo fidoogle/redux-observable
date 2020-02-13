@@ -28,6 +28,7 @@ function CardBalance({property}) {
     const [refreshThis, setRefreshThis] = useState(null);
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
     const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
+    const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext); //global
 
     useEffect(() => {
         setBalancesError(null)
@@ -51,13 +52,17 @@ function CardBalance({property}) {
     const clickCard = (e) => {
         e.stopPropagation()
         if (dataApp.activeLink==='payment') {
-            setDataApp({...dataApp, paySelected: [...dataApp.paySelected, property.accountkey]})
+            updatePaySelectedMap(property.accountkey, property) //TODO: may reduce what we store in each selected property
         }
     }
     
     const updateBalancesMap = (k,v) => {
         setBalances(balances.set(k,v)); //if we need re-render for updates to entire Map, use setBalances(new Map(balances.set(k,v)));
     }
+    const updatePaySelectedMap = (k,v) => {
+        setPaySelected(paySelected.set(k,v)); //if we need re-render for updates to entire Map, use setPaySelected(new Map(paySelected.set(k,v)));
+    }
+
     const updateBalancesLocal = (p) => {
         if (balances.get(property.accountkey)['activebalance'] || balances.get(property.accountkey)['activebalance']===0) {
             setBalancesError(null)

@@ -1,21 +1,24 @@
 import React, { useContext } from 'react'
 import { StoreContext } from '../stores/store'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
-import { includes } from 'lodash'
 
 const CardPay = ({id}) => {
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
+    const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext); //global
 
     const removeFromPay = (e) => {
         e.stopPropagation()
-        const filtered = dataApp.paySelected.filter(num => num!==id)
-        setDataApp({...dataApp, paySelected: filtered})
+        removeFromPaySelectedMap(id)
+    }
+
+    const removeFromPaySelectedMap = (k) => {
+        setPaySelected(paySelected.delete(k)); //if we need re-render for updates to entire Map, use setPaySelected(new Map(paySelected.delete(k,v)));
     }
 
     return (
         <>
             {
-                dataApp.activeLink==='payment' && includes(dataApp.paySelected, id) &&
+                dataApp.activeLink==='payment' && paySelected.has(id) &&
                 <div className="flex-card pay-card"
                     onClick={(e) => {removeFromPay(e)}}>
                     <div className="flex-card-column center pay-card-content">
