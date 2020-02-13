@@ -558,6 +558,33 @@ body > div {
     cursor: pointer;
   }
 }
+.pay-continue-bar {
+  @include flex-css($justify: space-between);
+  height: 105px;
+  background: #FFFFFF;
+  border: 2px solid #6848B5;
+  border-radius: 4px 4px 0px 0px;
+  padding: 0 20px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 24px;
+  line-height: 28px;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  .button {
+    @include flex-css();
+    width: 384px;
+    height: 66px;
+    background: #6848B5;
+    border-radius: 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+  }
+}
 
 
 
