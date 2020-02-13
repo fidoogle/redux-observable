@@ -8,7 +8,7 @@ export const StoreContext = React.createContext(null)
 
 export default ({ children }) => {
 
-    //INITIAL DATA can be gathered from asynch request
+    //INITIAL DATA (can be gathered from asynch request)
     const accountNumbers = ['11111', '22222', '33333']
     const accountProperties = []
     const userProfile = {
@@ -16,11 +16,15 @@ export default ({ children }) => {
         email: 'pedrosmith@gmail.com'
     }
     const appState = {
+        activeLink: 'overview',
+        isFlipped: false, //flip card around
         oneChart: null,
         oneOverlay: null,
+        payMultiple: [],
         selectedAccount: accountNumbers[0], //can be set to first accountNumber after they load
         viewAs: 'tiles',
     }
+
 
     // Global Functions
     const exampleGlobalFunction = (ascending) => {
@@ -30,19 +34,19 @@ export default ({ children }) => {
         exampleGlobalFunction
     }
 
+
     const [app, setApp] = React.useState(appState)
     const [user, setUser] = React.useState(userProfile)
     const [accounts, setAccounts] = React.useState(accountNumbers)
-    const [balances, setBalances] = React.useState(new Map())
     const [properties, setProperties] = React.useState(accountProperties)
     const [propertiesIntact, setPropertiesIntact] = React.useState(accountProperties)
     const [appFunctions, setAppFunctions] = React.useState(globalFunctions)
 
+    
     const store = {
         appInfo: [app, setApp],
         userInfo: [user, setUser],
         accountInfo: [accounts, setAccounts],
-        balancesInfo: [balances, setBalances],
         propertyInfo: [properties, setProperties],
         propertyInfoIntact: [propertiesIntact, setPropertiesIntact],
         appFunctions: [appFunctions, setAppFunctions],
