@@ -211,7 +211,13 @@ body > div {
 } /* flex-card-column*/
 
 
-
+.home {
+  @include flex-css();
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 100px;
+}
 .clip {
   white-space: nowrap;
   overflow: hidden;

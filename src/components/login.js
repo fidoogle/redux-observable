@@ -20,7 +20,7 @@ const Login = () => {
     //Globals 
     const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext);
     const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext);
-    let history = useHistory();
+    const history = useHistory();
 
     const changeHandler = (event) => {
         setUsername(event.target.value)
