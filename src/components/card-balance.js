@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { StoreContext } from '../stores/store'
 import { get } from 'lodash'
 import {fetchAccountBalances} from '../services/accounts'
@@ -138,6 +139,11 @@ function CardBalance({property}) {
             </div>
         </div>
     )
+}
+
+//https://blog.logrocket.com/validating-react-component-props-with-prop-types-ef14b29963fc/
+CardBalance.propTypes = { //TODO: define structure of property
+    property: PropTypes.object.isRequired
 }
 
 export default CardBalance;
