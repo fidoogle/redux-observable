@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../stores/store'
 import { fetchUserAccounts, sendLogin } from '../services/accounts'
 import { get } from 'lodash'
@@ -24,21 +24,14 @@ const Login = () => {
     const [username, setUsername] = useState(DEFAULT_LOGIN);
     const [loginError, setLoginError] = useState(null);
     const [loadingLogin, setLoadingLogin] = useState(false);
+    const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
     const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
     const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext); //original global data
     let history = useHistory();
 
-    // const fakeAuth = {
-    //     isAuthenticated: false,
-    //     authenticate(cb) {
-    //         this.isAuthenticated = true
-    //         setTimeout(cb, 100)
-    //     },
-    //     signout(cb) {
-    //         this.isAuthenticated = false
-    //         setTimeout(cb, 100)
-    //     }
-    // }
+    useEffect(() => {
+        setDataApp({...dataApp, activeLink: 'login'})
+    }, []);
 
     const changeHandler = (event) => {
         setUsername(event.target.value)
