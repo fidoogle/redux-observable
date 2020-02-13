@@ -1,19 +1,27 @@
-import React, { useContext } from 'react';
-import { StoreContext } from '../stores/store'
-import { Link } from 'react-router-dom'
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom'
 
 const NavHeader = () => {
-    const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
+
+    const location = useLocation();
+    console.log({location});
 
     return (
         <>
         {
-            dataApp.activeLink!=='login' && 
+            location.pathname!=='/login' && 
             <div className="nav-header">
                 <div className="content-max">
                     <div><Link to="/"><img src="./logo-saws.png" alt="sawslogo" /></Link></div>
                     <div className="title">My Commercial Account</div>
-                    <div className="need-help flex-css"><Link to="/login">Login</Link></div>
+                    <div className="need-help flex-css">
+                        {
+                            (location.pathname!=='/app')?
+                            <Link to="/login">Login</Link>
+                            :
+                            <Link to="/logout">Logout</Link>
+                        }
+                    </div>
                 </div>
             </div>
         }

@@ -8,37 +8,26 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import PersonIcon from '@material-ui/icons/Person';
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-import {
-        BrowserRouter as Router,
-        Switch,
-        Route,
-        Link,
-        Redirect,
-        useHistory,
-        useLocation
-    } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 
 const DEFAULT_LOGIN = 'sawsdev-mcastillo@saisd.net'
 
 const Login = () => {
+    //Locals
     const [username, setUsername] = useState(DEFAULT_LOGIN);
     const [loginError, setLoginError] = useState(null);
     const [loadingLogin, setLoadingLogin] = useState(false);
-    const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
-    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
-    const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext); //original global data
+    //Globals 
+    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext);
+    const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext);
     let history = useHistory();
-
-    useEffect(() => {
-        setDataApp({...dataApp, activeLink: 'login'})
-    }, []);
 
     const changeHandler = (event) => {
         setUsername(event.target.value)
         console.log({username})
         setLoginError(null)
     }
-    const login = (event) => { //Sample login: sawsdev-mcastillo@saisd.net
+    const login = (event) => { //TODO: get and store token
         event.preventDefault()
         event.stopPropagation()
         setLoadingLogin(true)

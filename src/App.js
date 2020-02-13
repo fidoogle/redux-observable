@@ -5,6 +5,7 @@ import About from './components/about'
 import AppLayout from './components/app-layout'
 import Help from './components/help'
 import Login from './components/login'
+import Logout from './components/logout'
 import NavHeader from './components/nav-header'
 
 import {
@@ -39,6 +40,7 @@ function App() {
         <Route path="/app" component={AppLayout} />
         <Route path="/help" component={Help} />
         <Route exact path="/login" component={Login} />
+        <Route exact path="/logout" component={Logout} />
       </Switch>
     </Router>
   )
