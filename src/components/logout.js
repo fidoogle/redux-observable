@@ -1,13 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StoreContext } from '../stores/store'
-import { fetchUserAccounts, sendLogin } from '../services/accounts'
-import { get } from 'lodash'
-
-import { TextField } from '@material-ui/core';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import PersonIcon from '@material-ui/icons/Person';
-import CircularProgress from '@material-ui/core/CircularProgress'
-
 import { useHistory } from "react-router-dom";
 
 const Logout = () => {

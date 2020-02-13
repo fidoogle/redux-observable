@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StoreContext } from '../stores/store'
 import { get } from 'lodash'
-import {fetchAccountBalances} from '../services/accounts'
+import Services from '../services'
 import Doughnut from './doughnut'
 import Status from './status'
 
@@ -33,7 +33,7 @@ function CardBalance({property}) {
         setBalancesError(null)
         if (get(property, 'accountkey', null)) {
             if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
-                fetchAccountBalances(property.accountkey).then(
+                Services.Account.fetchAccountBalances(property.accountkey).then(
                     p => {console.log('acctnumber:', property.acctnumber, {p})
                         updateBalancesMap(property.accountkey, p)
                         updateBalancesLocal(p) //triggers re-render of this component instance only

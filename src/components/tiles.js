@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../stores/store'
 import CardBalance from './card-balance'
 import CardUsage from './card-usage'
-import {fetchProperties} from '../services/accounts'
 import CardPay from './card-pay';
 import CardSkeleton from './card-skeleton';
 import GridSkeleton from './grid-skeleton';

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../stores/store'
-import { fetchUserAccounts, sendLogin } from '../services/accounts'
+import Services from '../services'
 import { get } from 'lodash'
 
 import { TextField } from '@material-ui/core';
@@ -31,12 +31,12 @@ const Login = () => {
         event.preventDefault()
         event.stopPropagation()
         setLoadingLogin(true)
-        sendLogin(username).then(
+        Services.User.sendLogin(username).then(
             //success
             p => {
                 setLoginError(null)
                 setLoadingLogin(false)
-                fetchUserAccounts(get(p, 'userx52id', null)).then(
+                Services.User.fetchUserAccounts(get(p, 'userx52id', null)).then(
                     //success
                     p => {
                         setGlobalProperties(p); 
