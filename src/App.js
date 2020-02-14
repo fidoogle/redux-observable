@@ -9,7 +9,7 @@ import Logout from './components/logout'
 import NavHeader from './components/nav-header'
 
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Route,
   Switch,
   Link,
