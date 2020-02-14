@@ -24,9 +24,9 @@ const Account = {
                     'Content-Type': 'application/json'
                 }
             });
-            if (randomError()) {
-                throw new Error('Random error');
-            }
+            // if (randomError()) {
+            //     throw new Error('Random error');
+            // }
             //console.log('activebalance: ', response.data.activebalance);
             return response.data;
         } catch(e) {

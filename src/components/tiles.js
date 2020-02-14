@@ -1,5 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../stores/store'
+import Services from '../services'
+import { get } from 'lodash'
+
 import CardBalance from './card-balance'
 import CardUsage from './card-usage'
 import CardPay from './card-pay';
@@ -19,13 +22,27 @@ const Tiles = (props) => {
     const history = useHistory();
 
     useEffect(() => {
-        if (!globalPropertiesIntact.length) {
-            //Re-login, need to get userx52id 
-            //TODO: check if we have userx52id available so we don't have to relogin
-            history.replace({ pathname: '/login'});
+        if (!globalPropertiesIntact || !globalPropertiesIntact.length) {
+            Services.User.fetchUserAccounts(get(props.p, 'userx52id', null)).then(
+                //success
+                p => {
+                    setGlobalProperties(p); 
+                    setGlobalPropertiesIntact(p);
+                    //history.replace({ pathname: '/app'})
+                },
+                //error
+                e => {
+                    console.error('error getting accounts', {e})
+                    throw e
+                }
+            ).catch((e) => { handleError(e) })
         }
         setProperties(globalProperties)
     }, [globalProperties]);
+
+    const handleError = (e) => {
+        //TODO: do we show an error msg on the landing page?
+    }
 
     return (
         <>
