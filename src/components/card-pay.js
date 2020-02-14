@@ -12,7 +12,10 @@ const CardPay = ({id}) => {
     }
 
     const removeFromPaySelectedMap = (k) => {
-        setPaySelected(paySelected.delete(k)); //if we need re-render for updates to entire Map, use setPaySelected(new Map(paySelected.delete(k,v)));
+        //setPaySelected(paySelected.delete(k)); //Wrong: paySelected.delete directly alters paySelected
+        const paySelectedClone = new Map(paySelected)
+        paySelectedClone.delete(k)
+        setPaySelected(paySelectedClone) //Right: alter via setPaySelected
     }
 
     return (

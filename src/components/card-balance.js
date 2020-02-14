@@ -60,7 +60,10 @@ function CardBalance({property}) {
         setBalances(balances.set(k,v)); //if we need re-render for updates to entire Map, use setBalances(new Map(balances.set(k,v)));
     }
     const updatePaySelectedMap = (k,v) => {
-        setPaySelected(paySelected.set(k,v)); //if we need re-render for updates to entire Map, use setPaySelected(new Map(paySelected.set(k,v)));
+        //setPaySelected(paySelected.set(k,v)); //Wrong: paySelected.set directly alters paySelected
+        const paySelectedClone = new Map(paySelected)
+        paySelectedClone.set(k,v)
+        setPaySelected(paySelectedClone) //Right: alter via setPaySelected
     }
 
     const updateBalancesLocal = (p) => {
