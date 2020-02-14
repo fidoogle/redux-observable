@@ -21,7 +21,7 @@ const Tiles = (props) => {
     useEffect(() => {
         if (!globalPropertiesIntact.length) {
             //Re-login, need to get userx52id 
-            //TODO: make sure we don't have userx52id available so we don't have to relogin
+            //TODO: check if we have userx52id available so we don't have to relogin
             history.replace({ pathname: '/login'});
         }
         setProperties(globalProperties)

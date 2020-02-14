@@ -7,6 +7,7 @@ import SparklineChart from './sparkline-chart'
 
 const CardUsage = ({property}) => {
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
+    const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
     const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext); //global
 
     const clickCard = (e) => {
