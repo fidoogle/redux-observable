@@ -12,7 +12,14 @@ const CardUsage = ({property}) => {
     const clickCard = (e) => {
         e.stopPropagation()
         if (dataApp.activeLink==='payment') {
-            updatePaySelectedMap(property.accountkey, property) //TODO: may reduce what we store in each selected property
+            if (dataApp.activeLink==='payment') {
+                updatePaySelectedMap(property.accountkey, {
+                    //TODO: may redefine what we store in each selected property
+                    acctnumber: property.acctnumber,
+                    useraccountid: property.useraccountid,
+                    balances: balances.get(property.accountkey)
+                })
+            }
         }
     }
 
