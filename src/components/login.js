@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../stores/store'
 import Services from '../services'
-import { get } from 'lodash'
 
 import { TextField } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -33,23 +32,10 @@ const Login = () => {
         setLoadingLogin(true)
         Services.User.sendLogin(username).then(
             //success
-            p => {
+            p => { //p is the returned promise
                 setLoginError(null)
                 setLoadingLogin(false)
-                Services.User.fetchUserAccounts(get(p, 'userx52id', null)).then(
-                    //success
-                    p => {
-                        setGlobalProperties(p); 
-                        setGlobalPropertiesIntact(p);
-                        history.replace({ pathname: '/app'});
-                    },
-                    //error
-                    e => {
-                        console.error('error getting accounts', {e})
-                        throw e
-                    }
-                ).catch((e) => { handleError(e) })
-
+                history.replace({ pathname: '/app', state: {p: p}})
             }, 
             //error
             e => { handleError(e) }
