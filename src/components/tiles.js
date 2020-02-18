@@ -9,7 +9,6 @@ import CardPay from './card-pay';
 import CardSkeleton from './card-skeleton';
 import GridSkeleton from './grid-skeleton';
 import GridView from './grid-view'
-import CircularProgress from '@material-ui/core/CircularProgress'
 import ReactCardFlip from 'react-card-flip';
 import { useHistory } from "react-router-dom";
 
@@ -17,6 +16,8 @@ const Tiles = (props) => {
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
     const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext); //global
     const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext); //original global data
+    const { ['webWorker']: [webWorker, setWebWorker] } = useContext(StoreContext);
+    
     const [properties, setProperties] = useState([]); //local
     const [propertiesError, setPropertiesError] = useState(null);
     const history = useHistory();
@@ -28,7 +29,9 @@ const Tiles = (props) => {
                 p => {
                     setGlobalProperties(p); 
                     setGlobalPropertiesIntact(p);
-                    //history.replace({ pathname: '/app'})
+                    webWorker.postMessage({action: 'setAccounts', accounts: p});
+                    
+                    webWorker.postMessage({action: 'getAccounts'});
                 },
                 //error
                 e => {

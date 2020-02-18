@@ -7,7 +7,6 @@ import Doughnut from './doughnut'
 import Status from './status'
 
 //Material UI
-import CircularProgress from '@material-ui/core/CircularProgress'
 import CachedIcon from '@material-ui/icons/Cached';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -15,10 +14,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 //Material Colors
-import green from '@material-ui/core/colors/green';
 import grey from '@material-ui/core/colors/grey';
-import lightBlue from '@material-ui/core/colors/lightBlue';
-import orange from '@material-ui/core/colors/orange';
 import red from '@material-ui/core/colors/red';
 
 
@@ -29,15 +25,18 @@ function CardBalance({property}) {
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
     const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
     const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext); //global
+    const { ['webWorker']: [webWorker, setWebWorker] } = useContext(StoreContext);
 
     useEffect(() => {
         setBalancesError(null)
         if (get(property, 'accountkey', null)) {
             if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
                 Services.Account.fetchAccountBalances(property.accountkey).then(
-                    p => {//console.log('acctnumber:', property.acctnumber, {p})
+                    p => {
+                        //console.log('accountkey:', property.accountkey, {p})
                         updateBalancesMap(property.accountkey, p)
                         updateBalancesLocal(p) //triggers re-render of this component instance only
+                        webWorker.postMessage({action: 'mergeBalances', accountkey: property.accountkey, balances: p});
                     },
                     e => { throw e }
                 ).catch( e => { setBalancesError(e) })
@@ -45,7 +44,7 @@ function CardBalance({property}) {
                 updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
             }
         } else {
-            setBalancesError(new Error('missing [property or accountkey'))
+            setBalancesError(new Error('missing property or accountkey'))
         }
     }, [property, refreshThis]);
     

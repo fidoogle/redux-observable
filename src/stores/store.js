@@ -42,6 +42,7 @@ export default ({ children }) => {
     const [properties, setProperties] = useState(accountProperties)
     const [propertiesIntact, setPropertiesIntact] = useState(accountProperties)
     const [appFunctions, setAppFunctions] = useState(globalFunctions)
+    const [worker, setWorker] = useState(null)
 
     
     const store = {
@@ -53,6 +54,7 @@ export default ({ children }) => {
         propertyInfo: [properties, setProperties],
         propertyInfoIntact: [propertiesIntact, setPropertiesIntact],
         appFunctions: [appFunctions, setAppFunctions],
+        webWorker: [worker, setWorker],
     }
 
     return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>
