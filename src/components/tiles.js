@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../stores/store'
-import Services from '../services'
+import services from '../services'
 import { get } from 'lodash'
 
 import CardBalance from './card-balance'
@@ -24,7 +24,7 @@ const Tiles = (props) => {
 
     useEffect(() => {
         if (!globalPropertiesIntact || !globalPropertiesIntact.length) {
-            Services.User.fetchUserAccounts(get(props.p, 'userx52id', null)).then(
+            services.user.fetchUserAccounts(get(props.p, 'userx52id', null)).then(
                 //success
                 p => {
                     setGlobalProperties(p); 

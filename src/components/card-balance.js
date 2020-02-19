@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StoreContext } from '../stores/store'
 import { get } from 'lodash'
-import Services from '../services'
+import services from '../services'
 import Doughnut from './doughnut'
 import Status from './status'
 
@@ -38,8 +38,10 @@ function CardBalance({property}) {
         setBalancesError(null)
         if (get(property, 'accountkey', null)) {
             fulfillBalances()
-            fulfillAddress()
-            fulfillGallons()
+            //TODO: check if address already fulfilled
+            services.account.fulfillAddress({accountkey: property.accountkey, setLocal: setAddressLocal, setError: setAddressError, webWorker})
+            //TODO: check if gallons already fulfilled
+            services.account.fulfillGallons({accountkey: property.accountkey, setLocal: setGallonsLocal, setError: setGallonsError, webWorker})
         } else {
             setBalancesError(new Error('missing property or accountkey'))
         }
@@ -57,21 +59,10 @@ function CardBalance({property}) {
         }
     }
 
-    const fulfillAddress = () => {
-        //TODO: check if address already fulfilled
-        Services.Account.fetchAccountAddress(property.accountkey).then(
-            p => {
-                //console.log('accountkey:', property.accountkey, {p})
-                setAddressLocal(p) //triggers re-render of this component instance only
-                webWorker.postMessage({action: 'mergeAddress', accountkey: property.accountkey, address: p});
-            },
-            e => { throw e }
-        ).catch( e => { setAddressError(e) })
-    }
 
     const fulfillBalances = () => {
         if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
-            Services.Account.fetchAccountBalances(property.accountkey).then(
+            services.account.fetchAccountBalances(property.accountkey).then(
                 p => {
                     //console.log('accountkey:', property.accountkey, {p})
                     updateBalancesMap(property.accountkey, p)
@@ -83,18 +74,6 @@ function CardBalance({property}) {
         } else {
             updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
         }
-    }
-
-    const fulfillGallons = () => {
-        //TODO: check if address already fulfilled
-        Services.Account.fetchAccountGallons(property.accountkey).then(
-            p => {
-                //console.log('accountkey:', property.accountkey, {p})
-                setGallonsLocal(p) //triggers re-render of this component instance only
-                webWorker.postMessage({action: 'mergeGallons', accountkey: property.accountkey, gallons: p});
-            },
-            e => { throw e }
-        ).catch( e => { setGallonsError(e) })
     }
     
     const updateBalancesMap = (k,v) => {

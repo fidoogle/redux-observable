@@ -38,7 +38,7 @@ export default function MyWorker(args) {
                 const current = accounts[foundIndex]
                 current.gallons = e.data.gallons
                 accounts[foundIndex] = current
-                postMessage({accounts})
+                //postMessage({accounts})
             }
         } else {
             postMessage('unknown postMessage in webworker:'+e.data)
