@@ -11,6 +11,31 @@ function randomError() {
 }
 
 const Account = {
+
+    fetchAccountAddress: async (accountKey) => {
+        const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getaccountaddress/${accountKey}`;
+    
+        try {
+            const response = await axios({
+                method: 'get',
+                url: url,
+                crossdmomain:true,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            // if (randomError()) {
+            //     throw new Error('Random error');
+            // }
+            //console.log('activebalance: ', response.data.activebalance);
+            return response.data;
+        } catch(e) {
+            console.error(`getaccountaddress failed for accountkey: ${accountKey}`);
+            throw e;
+        }
+    },
+
     fetchAccountBalances: async (accountKey) => {
         const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getbalance/${accountKey}`;
     
@@ -35,8 +60,8 @@ const Account = {
         }
     },
 
-    fetchAccountAddress: async (accountKey) => {
-        const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getaccountaddress/${accountKey}`;
+    fetchAccountGallons: async (accountKey) => {
+        const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/gallons/${accountKey}`;
     
         try {
             const response = await axios({
@@ -54,10 +79,11 @@ const Account = {
             //console.log('activebalance: ', response.data.activebalance);
             return response.data;
         } catch(e) {
-            console.error(`getaccountaddress failed for accountkey: ${accountKey}`);
+            console.error(`gallons failed for accountkey: ${accountKey}`);
             throw e;
         }
-    }
+    },
+
 }
 
 export default Account;

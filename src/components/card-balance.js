@@ -19,11 +19,13 @@ import red from '@material-ui/core/colors/red';
 
 
 function CardBalance({property}) {
-    const [addressLocal, setAddressLocal] = useState(null); //local to this component instance
+    //Locals:
+    const [addressLocal, setAddressLocal] = useState(null);
     const [addressError, setAddressError] = useState(null);
-
-    const [balancesLocal, setBalancesLocal] = useState(null); //local to this component instance
+    const [balancesLocal, setBalancesLocal] = useState(null);
     const [balancesError, setBalancesError] = useState(null);
+    const [gallonsLocal, setGallonsLocal] = useState(null);
+    const [gallonsError, setGallonsError] = useState(null);
 
     const [refreshThis, setRefreshThis] = useState(null);
     //Globals:
@@ -37,6 +39,7 @@ function CardBalance({property}) {
         if (get(property, 'accountkey', null)) {
             fulfillBalances()
             fulfillAddress()
+            fulfillGallons()
         } else {
             setBalancesError(new Error('missing property or accountkey'))
         }
@@ -80,6 +83,18 @@ function CardBalance({property}) {
         } else {
             updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
         }
+    }
+
+    const fulfillGallons = () => {
+        //TODO: check if address already fulfilled
+        Services.Account.fetchAccountGallons(property.accountkey).then(
+            p => {
+                //console.log('accountkey:', property.accountkey, {p})
+                setGallonsLocal(p) //triggers re-render of this component instance only
+                webWorker.postMessage({action: 'mergeGallons', accountkey: property.accountkey, gallons: p});
+            },
+            e => { throw e }
+        ).catch( e => { setGallonsError(e) })
     }
     
     const updateBalancesMap = (k,v) => {
@@ -143,7 +158,7 @@ function CardBalance({property}) {
                                 </div>
                             :
                                 (addressLocal ?
-                                    `${addressLocal.streetnumber && addressLocal.streetnumber.replace(/^0+/, '')} ${addressLocal.streetname} ${addressLocal.suffix}`
+                                    `${addressLocal.streetnumber} ${addressLocal.streetname} ${addressLocal.suffix}`
                                 : 
                                     <Skeleton variant="rect" width={130} height={22}/>
                                 )

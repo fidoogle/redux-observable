@@ -20,7 +20,7 @@ export default function MyWorker(args) {
                 const current = accounts[foundIndex]
                 current.address = e.data.address
                 accounts[foundIndex] = current
-                postMessage({accounts})
+                //postMessage({accounts})
             }
         } else if (e.data.action === 'mergeBalances') {
             const foundIndex = accounts.findIndex(o => o.accountkey === e.data.accountkey)
@@ -30,6 +30,15 @@ export default function MyWorker(args) {
                 current.balances = e.data.balances
                 accounts[foundIndex] = current
                 //postMessage({accounts})
+            }
+        } else if (e.data.action === 'mergeGallons') {
+            const foundIndex = accounts.findIndex(o => o.accountkey === e.data.accountkey)
+            if (foundIndex!==-1) {
+                //TODO: Spread operator didn't work: accounts[foundIndex] = {...accounts[foundIndex], gallons: e.data.gallons}
+                const current = accounts[foundIndex]
+                current.gallons = e.data.gallons
+                accounts[foundIndex] = current
+                postMessage({accounts})
             }
         } else {
             postMessage('unknown postMessage in webworker:'+e.data)
