@@ -19,30 +19,24 @@ import red from '@material-ui/core/colors/red';
 
 
 function CardBalance({property}) {
+    const [addressLocal, setAddressLocal] = useState(null); //local to this component instance
+    const [addressError, setAddressError] = useState(null);
+
     const [balancesLocal, setBalancesLocal] = useState(null); //local to this component instance
     const [balancesError, setBalancesError] = useState(null);
+
     const [refreshThis, setRefreshThis] = useState(null);
+    //Globals:
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
-    const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
-    const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext); //global
+    const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext);
+    const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext);
     const { ['webWorker']: [webWorker, setWebWorker] } = useContext(StoreContext);
 
     useEffect(() => {
         setBalancesError(null)
         if (get(property, 'accountkey', null)) {
-            if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
-                Services.Account.fetchAccountBalances(property.accountkey).then(
-                    p => {
-                        //console.log('accountkey:', property.accountkey, {p})
-                        updateBalancesMap(property.accountkey, p)
-                        updateBalancesLocal(p) //triggers re-render of this component instance only
-                        webWorker.postMessage({action: 'mergeBalances', accountkey: property.accountkey, balances: p});
-                    },
-                    e => { throw e }
-                ).catch( e => { setBalancesError(e) })
-            } else {
-                updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
-            }
+            fulfillBalances()
+            fulfillAddress()
         } else {
             setBalancesError(new Error('missing property or accountkey'))
         }
@@ -57,6 +51,34 @@ function CardBalance({property}) {
                 useraccountid: property.useraccountid,
                 balances: balances.get(property.accountkey)
             })
+        }
+    }
+
+    const fulfillAddress = () => {
+        //TODO: check if address already fulfilled
+        Services.Account.fetchAccountAddress(property.accountkey).then(
+            p => {
+                //console.log('accountkey:', property.accountkey, {p})
+                setAddressLocal(p) //triggers re-render of this component instance only
+                webWorker.postMessage({action: 'mergeAddress', accountkey: property.accountkey, address: p});
+            },
+            e => { throw e }
+        ).catch( e => { setAddressError(e) })
+    }
+
+    const fulfillBalances = () => {
+        if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
+            Services.Account.fetchAccountBalances(property.accountkey).then(
+                p => {
+                    //console.log('accountkey:', property.accountkey, {p})
+                    updateBalancesMap(property.accountkey, p)
+                    updateBalancesLocal(p) //triggers re-render of this component instance only
+                    webWorker.postMessage({action: 'mergeBalances', accountkey: property.accountkey, balances: p});
+                },
+                e => { throw e }
+            ).catch( e => { setBalancesError(e) })
+        } else {
+            updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
         }
     }
     
@@ -108,7 +130,25 @@ function CardBalance({property}) {
             <div className="flex-card-row">
                 <div className="flex-card-column clip">
                     <div className="account clip">Account #: {property.acctnumber}</div>
-                    <div className="address">{property.address}</div>
+                    <div className="address">
+                        {
+                            addressError ?
+                                <div className="retry" onClick={(e) => setRefreshThis(Math.random)}>
+                                <Tooltip title="Failed to load. Click to retry.">
+                                    <span>
+                                        <WarningIcon fontSize="small" style={{ color: red[500] }}/>
+                                        <CachedIcon/> Retry
+                                    </span>
+                                </Tooltip>
+                                </div>
+                            :
+                                (addressLocal ?
+                                    `${addressLocal.streetnumber && addressLocal.streetnumber.replace(/^0+/, '')} ${addressLocal.streetname} ${addressLocal.suffix}`
+                                : 
+                                    <Skeleton variant="rect" width={130} height={22}/>
+                                )
+                        }
+                    </div>
                     <div className="balance clip">
                         {
                             balancesError ?
@@ -146,7 +186,7 @@ function CardBalance({property}) {
                         </div>
                         <Doughnut data={data}/>
                     </div>
-                    <Status status={property.status}/>
+                    <Status status={property.status || 'Received'}/>
                 </div>
             </div>
         </div>

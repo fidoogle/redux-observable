@@ -30,7 +30,31 @@ const Account = {
             //console.log('activebalance: ', response.data.activebalance);
             return response.data;
         } catch(e) {
-            console.error(`getbalance failed for ${accountKey}`);
+            console.error(`getbalance failed for accountkey: ${accountKey}`);
+            throw e;
+        }
+    },
+
+    fetchAccountAddress: async (accountKey) => {
+        const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getaccountaddress/${accountKey}`;
+    
+        try {
+            const response = await axios({
+                method: 'get',
+                url: url,
+                crossdmomain:true,
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            });
+            // if (randomError()) {
+            //     throw new Error('Random error');
+            // }
+            //console.log('activebalance: ', response.data.activebalance);
+            return response.data;
+        } catch(e) {
+            console.error(`getaccountaddress failed for accountkey: ${accountKey}`);
             throw e;
         }
     }
