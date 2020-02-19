@@ -29,7 +29,7 @@ export default function MyWorker(args) {
                 const current = accounts[foundIndex]
                 current.balances = e.data.balances
                 accounts[foundIndex] = current
-                //postMessage({accounts})
+                postMessage({accounts})
             }
         } else if (e.data.action === 'mergeGallons') {
             const foundIndex = accounts.findIndex(o => o.accountkey === e.data.accountkey)

@@ -35,6 +35,26 @@ async function fetchAccountAddress(accountKey) {
     }
 }
 
+async function fetchAccountBalances(accountKey) {
+    const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getbalance/${accountKey}`;
+
+    try {
+        const response = await axios({
+            method: 'get',
+            url: url,
+            crossdmomain:true,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch(e) {
+        console.error(`getbalance failed for accountkey: ${accountKey}`);
+        throw e;
+    }
+}
+
 async function fetchAccountGallons(accountKey) {
     const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/gallons/${accountKey}`;
 
@@ -69,7 +89,16 @@ const account = {
         ).catch( e => { setError(e) })
     },
 
-    
+    fulfillBalances: async ({accountkey, setLocal, setError, webWorker}) => {
+        fetchAccountBalances(accountkey).then(
+            p => {
+                webWorker.postMessage({action: 'mergeBalances', accountkey: accountkey, balances: p});
+                setLocal(p);
+            },
+            e => { throw e }
+        ).catch( e => { setError(e) })
+    },
+
     fulfillGallons: async ({accountkey, setLocal, setError, webWorker}) => {
         fetchAccountGallons(accountkey).then(
             p => {
@@ -80,28 +109,6 @@ const account = {
         ).catch( e => { setError(e) })
     },
 
-    fetchAccountBalances: async (accountKey) => {
-        const url = `https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getbalance/${accountKey}`;
-    
-        try {
-            const response = await axios({
-                method: 'get',
-                url: url,
-                crossdmomain:true,
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                }
-            });
-            return response.data;
-        } catch(e) {
-            console.error(`getbalance failed for accountkey: ${accountKey}`);
-            throw e;
-        }
-    },
-    
-    
-    
 }
 
 export default account;

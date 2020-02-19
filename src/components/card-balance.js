@@ -28,16 +28,17 @@ function CardBalance({property}) {
     const [gallonsError, setGallonsError] = useState(null);
 
     const [refreshThis, setRefreshThis] = useState(null);
+
     //Globals:
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
-    const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext);
     const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext);
     const { ['webWorker']: [webWorker, setWebWorker] } = useContext(StoreContext);
 
     useEffect(() => {
         setBalancesError(null)
         if (get(property, 'accountkey', null)) {
-            fulfillBalances()
+            //TODO: check if balances already fulfilled
+            services.account.fulfillBalances({accountkey: property.accountkey, setLocal: setBalancesLocal, setError: setBalancesError, webWorker})
             //TODO: check if address already fulfilled
             services.account.fulfillAddress({accountkey: property.accountkey, setLocal: setAddressLocal, setError: setAddressError, webWorker})
             //TODO: check if gallons already fulfilled
@@ -54,45 +55,16 @@ function CardBalance({property}) {
                 //TODO: may redefine what we store in each selected property
                 acctnumber: property.acctnumber,
                 useraccountid: property.useraccountid,
-                balances: balances.get(property.accountkey)
+                balances: balancesLocal
             })
         }
     }
-
-
-    const fulfillBalances = () => {
-        if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
-            services.account.fetchAccountBalances(property.accountkey).then(
-                p => {
-                    //console.log('accountkey:', property.accountkey, {p})
-                    updateBalancesMap(property.accountkey, p)
-                    updateBalancesLocal(p) //triggers re-render of this component instance only
-                    webWorker.postMessage({action: 'mergeBalances', accountkey: property.accountkey, balances: p});
-                },
-                e => { throw e }
-            ).catch( e => { setBalancesError(e) })
-        } else {
-            updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
-        }
-    }
     
-    const updateBalancesMap = (k,v) => {
-        setBalances(balances.set(k,v)); //if we need re-render for updates to entire Map, use setBalances(new Map(balances.set(k,v)));
-    }
     const updatePaySelectedMap = (k,v) => {
         //setPaySelected(paySelected.set(k,v)); //Wrong: paySelected.set directly alters paySelected
         const paySelectedClone = new Map(paySelected)
         paySelectedClone.set(k,v)
         setPaySelected(paySelectedClone) //Right: alter via setPaySelected
-    }
-
-    const updateBalancesLocal = (p) => {
-        if (balances.get(property.accountkey)['activebalance'] || balances.get(property.accountkey)['activebalance']===0) {
-            setBalancesError(null)
-            setBalancesLocal(p); //triggers re-render of this component instance only
-        } else {
-            setBalancesError(new Error('activebalance is undefined'));
-        }
     }
 
     var randomScalingFactor = function() {

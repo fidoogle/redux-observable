@@ -37,7 +37,6 @@ export default ({ children }) => {
     const [app, setApp] = useState(appState)
     const [user, setUser] = useState(userProfile)
     const [accounts, setAccounts] = useState(accountNumbers)
-    const [balances, setBalances] = useState(new Map()) //keys are accountkey
     const [paySelected, setPaySelected] = useState(new Map()) //keys are accountkey
     const [properties, setProperties] = useState(accountProperties)
     const [propertiesIntact, setPropertiesIntact] = useState(accountProperties)
@@ -49,7 +48,6 @@ export default ({ children }) => {
         appInfo: [app, setApp],
         userInfo: [user, setUser],
         accountInfo: [accounts, setAccounts],
-        balancesInfo: [balances, setBalances],
         payInfo: [paySelected, setPaySelected],
         propertyInfo: [properties, setProperties],
         propertyInfoIntact: [propertiesIntact, setPropertiesIntact],
