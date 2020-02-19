@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../stores/store'
-import Services from '../services'
+import services from '../services'
 
 import { TextField } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -30,7 +30,7 @@ const Login = () => {
         event.preventDefault()
         event.stopPropagation()
         setLoadingLogin(true)
-        Services.User.sendLogin(username).then(
+        services.user.sendLogin(username).then(
             //success
             p => { //p is the returned promise
                 setLoginError(null)

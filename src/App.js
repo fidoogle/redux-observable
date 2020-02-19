@@ -1,5 +1,6 @@
 
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { StoreContext } from './stores/store'
 import Home from './components/home'
 import About from './components/about'
 import AppLayout from './components/app-layout'
@@ -7,27 +8,32 @@ import Help from './components/help'
 import Login from './components/login'
 import Logout from './components/logout'
 import NavHeader from './components/nav-header'
+import workerSetup from './workers/worker-setup'
+import workerScript from './workers/worker'
 
 import {
   HashRouter as Router,
   Route,
-  Switch,
-  Link,
-  Redirect,
-  withRouter
+  Switch
 } from 'react-router-dom'
 
 function App() {
-  
-  // return (
-  //   <Router>
-  //     <Switch>
-  //       <Route exact path="/" component={Login}/>
-  //       <Route path="/login" component={Login}/>
-  //       <PrivateRoute path='/app' component={AppLayout} />
-  //     </Switch>
-  //   </Router>
-  // )
+  const [initialized, setInitialized] = useState(false);
+  const { ['webWorker']: [webWorker, setWebWorker] } = useContext(StoreContext);
+
+  const [num, setNum] = useState(0);
+  let worker = null;
+
+  useEffect(() => {
+    if (!initialized) {
+      worker = new workerSetup(workerScript);
+      worker.onerror = onError;
+      worker.onmessage = onMessage;
+      setWebWorker(worker);
+      setInitialized(true);
+    }
+  }, []);
+
   return (
     <Router>
       <>
@@ -44,6 +50,14 @@ function App() {
       </Switch>
     </Router>
   )
+
+  function onError(error) {
+    console.log(error)
+  }
+
+  function onMessage(e) {
+    console.log("[MAIN] MSG FROM WORKER: ", e.data);
+  }
 }
 
 export default App;

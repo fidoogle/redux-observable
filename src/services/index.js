@@ -1,9 +1,9 @@
-import Account from './account'
-import User from './user'
+import account from './account'
+import user from './user'
 
-const Services = {
-    Account,
-    User
+const services = {
+    account,
+    user
 }
 
-export default Services;
+export default services;

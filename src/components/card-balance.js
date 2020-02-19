@@ -2,12 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { StoreContext } from '../stores/store'
 import { get } from 'lodash'
-import Services from '../services'
+import services from '../services'
 import Doughnut from './doughnut'
 import Status from './status'
 
 //Material UI
-import CircularProgress from '@material-ui/core/CircularProgress'
 import CachedIcon from '@material-ui/icons/Cached';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import WarningIcon from '@material-ui/icons/Warning';
@@ -15,37 +14,37 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Skeleton from '@material-ui/lab/Skeleton';
 
 //Material Colors
-import green from '@material-ui/core/colors/green';
 import grey from '@material-ui/core/colors/grey';
-import lightBlue from '@material-ui/core/colors/lightBlue';
-import orange from '@material-ui/core/colors/orange';
 import red from '@material-ui/core/colors/red';
 
 
 function CardBalance({property}) {
-    const [balancesLocal, setBalancesLocal] = useState(null); //local to this component instance
+    //Locals:
+    const [addressLocal, setAddressLocal] = useState(null);
+    const [addressError, setAddressError] = useState(null);
+    const [balancesLocal, setBalancesLocal] = useState(null);
     const [balancesError, setBalancesError] = useState(null);
+    const [gallonsLocal, setGallonsLocal] = useState(null);
+    const [gallonsError, setGallonsError] = useState(null);
+
     const [refreshThis, setRefreshThis] = useState(null);
+
+    //Globals:
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
-    const { ['balancesInfo']: [balances, setBalances] } = useContext(StoreContext); //global
-    const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext); //global
+    const { ['payInfo']: [paySelected, setPaySelected] } = useContext(StoreContext);
+    const { ['webWorker']: [webWorker, setWebWorker] } = useContext(StoreContext);
 
     useEffect(() => {
         setBalancesError(null)
         if (get(property, 'accountkey', null)) {
-            if (!balances.get(property.accountkey) || balances.get(property.accountkey)['activebalance']==null) { //Since null == undefined is true, this catches both null and undefined
-                Services.Account.fetchAccountBalances(property.accountkey).then(
-                    p => {//console.log('acctnumber:', property.acctnumber, {p})
-                        updateBalancesMap(property.accountkey, p)
-                        updateBalancesLocal(p) //triggers re-render of this component instance only
-                    },
-                    e => { throw e }
-                ).catch( e => { setBalancesError(e) })
-            } else {
-                updateBalancesLocal(balances.get(property.accountkey)) //triggers re-render of this component instance only
-            }
+            //TODO: check if balances already fulfilled
+            services.account.fulfillBalances({accountkey: property.accountkey, setLocal: setBalancesLocal, setError: setBalancesError, webWorker})
+            //TODO: check if address already fulfilled
+            services.account.fulfillAddress({accountkey: property.accountkey, setLocal: setAddressLocal, setError: setAddressError, webWorker})
+            //TODO: check if gallons already fulfilled
+            services.account.fulfillGallons({accountkey: property.accountkey, setLocal: setGallonsLocal, setError: setGallonsError, webWorker})
         } else {
-            setBalancesError(new Error('missing [property or accountkey'))
+            setBalancesError(new Error('missing property or accountkey'))
         }
     }, [property, refreshThis]);
     
@@ -56,28 +55,16 @@ function CardBalance({property}) {
                 //TODO: may redefine what we store in each selected property
                 acctnumber: property.acctnumber,
                 useraccountid: property.useraccountid,
-                balances: balances.get(property.accountkey)
+                balances: balancesLocal
             })
         }
     }
     
-    const updateBalancesMap = (k,v) => {
-        setBalances(balances.set(k,v)); //if we need re-render for updates to entire Map, use setBalances(new Map(balances.set(k,v)));
-    }
     const updatePaySelectedMap = (k,v) => {
         //setPaySelected(paySelected.set(k,v)); //Wrong: paySelected.set directly alters paySelected
         const paySelectedClone = new Map(paySelected)
         paySelectedClone.set(k,v)
         setPaySelected(paySelectedClone) //Right: alter via setPaySelected
-    }
-
-    const updateBalancesLocal = (p) => {
-        if (balances.get(property.accountkey)['activebalance'] || balances.get(property.accountkey)['activebalance']===0) {
-            setBalancesError(null)
-            setBalancesLocal(p); //triggers re-render of this component instance only
-        } else {
-            setBalancesError(new Error('activebalance is undefined'));
-        }
     }
 
     var randomScalingFactor = function() {
@@ -109,7 +96,25 @@ function CardBalance({property}) {
             <div className="flex-card-row">
                 <div className="flex-card-column clip">
                     <div className="account clip">Account #: {property.acctnumber}</div>
-                    <div className="address">{property.address}</div>
+                    <div className="address">
+                        {
+                            addressError ?
+                                <div className="retry" onClick={(e) => setRefreshThis(Math.random)}>
+                                <Tooltip title="Failed to load. Click to retry.">
+                                    <span>
+                                        <WarningIcon fontSize="small" style={{ color: red[500] }}/>
+                                        <CachedIcon/> Retry
+                                    </span>
+                                </Tooltip>
+                                </div>
+                            :
+                                (addressLocal ?
+                                    `${addressLocal.streetnumber} ${addressLocal.streetname} ${addressLocal.suffix}`
+                                : 
+                                    <Skeleton variant="rect" width={130} height={22}/>
+                                )
+                        }
+                    </div>
                     <div className="balance clip">
                         {
                             balancesError ?
@@ -147,7 +152,7 @@ function CardBalance({property}) {
                         </div>
                         <Doughnut data={data}/>
                     </div>
-                    <Status status={property.status}/>
+                    <Status status={property.status || 'Received'}/>
                 </div>
             </div>
         </div>
