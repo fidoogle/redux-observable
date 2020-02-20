@@ -1,10 +1,19 @@
 import React, { useContext, useState } from 'react';
+import { useHistory } from "react-router-dom";
 import SettingsIcon from '@material-ui/icons/Settings';
 import { StoreContext } from '../stores/store'
 
 const NavBar = () => {
     const [activeLink, setActiveLink] = useState('overview')
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
+    const history = useHistory();
+
+    const calendar = (e) => {
+        e.stopPropagation()
+        setActiveLink('calendar')
+        setDataApp({...dataApp, activeLink: 'calendar'})
+        history.push('/calendar')
+    }
 
     const flipCard = (e, setTo, view) => {
         e.stopPropagation()
@@ -31,7 +40,10 @@ const NavBar = () => {
                         Usage
                     </div>
                     <div>History</div>
-                    <div>Move In/Out</div>
+                    <div onClick={(e) => {calendar(e)}} 
+                        className={(activeLink==='calendar')?'active':''}>
+                        Calendar
+                    </div>
                     <div onClick={(e) => {payment(e)}} 
                         className={(activeLink==='payment')?'active':''}>
                         Payment

@@ -4,6 +4,7 @@ import { StoreContext } from './stores/store'
 import Home from './components/home'
 import About from './components/about'
 import AppLayout from './components/app-layout'
+import Calendar from './components/calendar'
 import Help from './components/help'
 import Login from './components/login'
 import Logout from './components/logout'
@@ -44,6 +45,7 @@ function App() {
         <Route exact path="/" component={Home} />
         <Route path="/about" component={About} />
         <Route path="/app" component={AppLayout} />
+        <Route path="/calendar" component={Calendar} />
         <Route path="/help" component={Help} />
         <Route exact path="/login" component={Login} />
         <Route exact path="/logout" component={Logout} />
