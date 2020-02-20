@@ -1,8 +1,8 @@
 import React from 'react';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
+import { loremIpsum } from "lorem-ipsum";
 import Nav from './nav'
-import PageTitles from './page-titles'
 import Footer from './footer'
 
 const localizer = momentLocalizer(moment)
@@ -19,7 +19,12 @@ for (let i = 0; i < 365; ++i) {
         {
             start: newDate,
             end: newDate,
-            title: `Acct: ${i+99999}`,
+            title: `Acct: ${i+99999} Address: ${
+                loremIpsum({
+                    count: 3,
+                    units: "words"
+                })
+            }`,
             allDay: true
         }
     )
