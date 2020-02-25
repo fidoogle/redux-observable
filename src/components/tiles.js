@@ -3,6 +3,9 @@ import { StoreContext } from '../stores/store'
 import services from '../services'
 import { get } from 'lodash'
 
+import { useDispatch, useSelector } from "react-redux"
+import { fetchUserAccounts } from '../actions'
+
 import CardBalance from './card-balance'
 import CardUsage from './card-usage'
 import CardPay from './card-pay';
@@ -22,26 +25,30 @@ const Tiles = (props) => {
     const [propertiesError, setPropertiesError] = useState(null);
     const history = useHistory();
 
+    const accounts = useSelector(state => state.accounts)
+    const dispatch = useDispatch()
+
     useEffect(() => {
-        if (!globalPropertiesIntact || !globalPropertiesIntact.length) {
-            services.user.fetchUserAccounts(get(props.p, 'userx52id', null)).then(
-                //success
-                p => {
-                    setGlobalProperties(p); 
-                    setGlobalPropertiesIntact(p);
-                    webWorker.postMessage({action: 'setAccounts', accounts: p});
+        dispatch(fetchUserAccounts(get(props.p, 'userx52id', null)))
+        // if (!globalPropertiesIntact || !globalPropertiesIntact.length) {
+        //     services.user.fetchUserAccounts(get(props.p, 'userx52id', null)).then(
+        //         //success
+        //         p => {
+        //             setGlobalProperties(p); 
+        //             setGlobalPropertiesIntact(p);
+        //             webWorker.postMessage({action: 'setAccounts', accounts: p});
                     
-                    webWorker.postMessage({action: 'getAccounts'});
-                },
-                //error
-                e => {
-                    console.error('error getting accounts', {e})
-                    throw e
-                }
-            ).catch((e) => { handleError(e) })
-        }
-        setProperties(globalProperties)
-    }, [globalProperties]);
+        //             webWorker.postMessage({action: 'getAccounts'});
+        //         },
+        //         //error
+        //         e => {
+        //             console.error('error getting accounts', {e})
+        //             throw e
+        //         }
+        //     ).catch((e) => { handleError(e) })
+        // }
+        //setProperties(accounts)
+    }, []);
 
     const handleError = (e) => {
         //TODO: do we show an error msg on the landing page?
@@ -57,8 +64,8 @@ const Tiles = (props) => {
                             propertiesError ?
                                 <div>There is an error</div>
                             :
-                            properties.length ?
-                            properties.map((o) => 
+                            accounts.length ?
+                            accounts.map((o) => 
                                 <div key={o.accountkey} className="pay-card-parent">
                                     <ReactCardFlip isFlipped={dataApp.isFlipped} flipDirection="horizontal">
                                         <CardBalance property={o}/>
