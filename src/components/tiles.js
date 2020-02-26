@@ -4,7 +4,7 @@ import services from '../services'
 import { get } from 'lodash'
 
 import { useDispatch, useSelector } from "react-redux"
-import { fetchUserAccounts } from '../actions'
+import { fetchUserAccounts, fetchData } from '../actions'
 
 import CardBalance from './card-balance'
 import CardUsage from './card-usage'
@@ -25,11 +25,13 @@ const Tiles = (props) => {
     const [propertiesError, setPropertiesError] = useState(null);
     const history = useHistory();
 
-    const accounts = useSelector(state => state.accounts)
+    const accounts = useSelector(state => state.userAccounts.data)
+    const status = useSelector(state => state.userAccounts.status)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(fetchUserAccounts(get(props.p, 'userx52id', null)))
+        //dispatch(fetchUserAccounts(get(props.p, 'userx52id', null)))
+        dispatch(fetchData(get(props.p, 'userx52id', null)))
         // if (!globalPropertiesIntact || !globalPropertiesIntact.length) {
         //     services.user.fetchUserAccounts(get(props.p, 'userx52id', null)).then(
         //         //success
@@ -60,11 +62,11 @@ const Tiles = (props) => {
             <div className="content-max">
                 {dataApp.viewAs==='tiles' &&
                     <div className="flex-card-container">
-                        {
-                            propertiesError ?
-                                <div>There is an error</div>
-                            :
-                            accounts.length ?
+                        {status==='failure' && (
+                            <div>There is an error</div>
+                        )}
+                        
+                        {status==='success' && (
                             accounts.map((o) => 
                                 <div key={o.accountkey} className="pay-card-parent">
                                     <ReactCardFlip isFlipped={dataApp.isFlipped} flipDirection="horizontal">
@@ -74,13 +76,15 @@ const Tiles = (props) => {
                                     <CardPay id={o.accountkey}/>
                                 </div>
                             )
-                            : 
+                        )}
+                        
+                        {status==='pending' && (
                             Array.from(new Array(20)).map((o, index) => 
                             <React.Fragment key={index}>
                                 <CardSkeleton/>
                             </React.Fragment>
                             )
-                        }
+                        )}
                     </div>
                 }
             </div>
