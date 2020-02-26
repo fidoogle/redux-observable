@@ -4,16 +4,16 @@ import { fetchFulFilled, FETCH_DATA, setStatus } from '../actions'
 import { ofType } from 'redux-observable'
 import { concat, of } from 'rxjs'
 
-const API = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuseraccounts/636430'
+const API = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuseraccounts/'
 
 export function fetchUserAccountsEpic(action$) {
 
     return action$.pipe(
         ofType(FETCH_DATA),
-        switchMap(() => {
+        switchMap(({ payload }) => {
             return concat(
                 of(setStatus('pending')),
-                ajax.getJSON(API).pipe(
+                ajax.getJSON(API+payload).pipe(
                     map(resp => fetchFulFilled(resp))
                 )
             )

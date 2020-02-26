@@ -33,9 +33,10 @@ export const fetchFulFilled = (userAccounts) => {
     }
 }
 
-export const fetchData= () => {
+export const fetchData= (accountID) => {
     return {
-        type: FETCH_DATA
+        type: FETCH_DATA,
+        payload: accountID
     }
 }
 
