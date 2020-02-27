@@ -1,5 +1,6 @@
 //User login / logout
 export const FETCH_USER_LOGIN_DATA = 'FETCH_USER_LOGIN_DATA'
+export const FETCH_USER_LOGIN_FAILED = 'FETCH_USER_LOGIN_FAILED'
 export const FETCH_USER_LOGIN_FULFILLED = 'FETCH_USER_LOGIN_FULFILLED'
 export const SET_USER_LOGIN_STATUS = 'SET_USER_LOGIN_STATUS'
 export const USER_LOGOUT = 'USER_LOGOUT'
@@ -7,6 +8,7 @@ export const USER_ACCOUNTS_LOGOUT = 'USER_ACCOUNTS_LOGOUT'
 
 //Fetch user's accounts
 export const FETCH_DATA = 'FETCH_DATA'
+export const FETCH_FAILED = 'FETCH_FAILED'
 export const FETCH_FULFILLED = 'FETCH_FULFILLED'
 export const SET_STATUS = 'SET_STATUS'
 
@@ -36,6 +38,12 @@ export const fetchData= (accountID) => {
         payload: accountID
     }
 }
+export const fetchFailed = (message) => {
+    return {
+        type: FETCH_FAILED,
+        payload: message
+    }
+}
 export const fetchFulFilled = (userAccounts) => {
     return {
         type: FETCH_FULFILLED,
@@ -54,6 +62,12 @@ export const fetchUserLoginData= (emailaddress) => {
     return {
         type: FETCH_USER_LOGIN_DATA,
         payload: emailaddress
+    }
+}
+export const fetchUserLoginFailed = (message) => {
+    return {
+        type: FETCH_USER_LOGIN_FAILED,
+        payload: message
     }
 }
 export const fetchUserLoginFulFilled = (userLoginData) => {
