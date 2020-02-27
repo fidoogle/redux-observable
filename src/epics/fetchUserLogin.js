@@ -1,5 +1,5 @@
 import { ajax } from 'rxjs/ajax'
-import { map, switchMap } from 'rxjs/operators'
+import { filter, map, switchMap } from 'rxjs/operators'
 import { FETCH_USER_LOGIN_DATA, fetchUserLoginFulFilled, setUserLoginStatus } from '../actions'
 import { ofType } from 'redux-observable'
 import { concat, of } from 'rxjs'
@@ -10,6 +10,7 @@ export function fetchUserLoginEpic(action$) {//TODO: trap errors
 
     return action$.pipe(
         ofType(FETCH_USER_LOGIN_DATA),
+        filter(({ payload }) => payload.trim() !== ''),
         switchMap(({ payload }) => {
             return concat(
                 of(setUserLoginStatus('pending')),
