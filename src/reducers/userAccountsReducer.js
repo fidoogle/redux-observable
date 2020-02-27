@@ -1,4 +1,4 @@
-import {FETCH_FULFILLED, SET_STATUS} from '../actions'
+import {FETCH_FULFILLED, SET_STATUS, USER_ACCOUNTS_LOGOUT} from '../actions'
 
 const initialState = {
     data: [],
@@ -18,6 +18,13 @@ export function userAccountsReducer(state = initialState, action) {
                 ...state,
                 status: 'success',
                 data: action.payload
+            }
+
+        case USER_ACCOUNTS_LOGOUT: 
+            return {
+                ...state,
+                data: [],
+                status: 'idle'
             }
             
         default: return state

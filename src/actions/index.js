@@ -1,7 +1,9 @@
-//User logs in
+//User login / logout
 export const FETCH_USER_LOGIN_DATA = 'FETCH_USER_LOGIN_DATA'
 export const FETCH_USER_LOGIN_FULFILLED = 'FETCH_USER_LOGIN_FULFILLED'
 export const SET_USER_LOGIN_STATUS = 'SET_USER_LOGIN_STATUS'
+export const USER_LOGOUT = 'USER_LOGOUT'
+export const USER_ACCOUNTS_LOGOUT = 'USER_ACCOUNTS_LOGOUT'
 
 //Fetch user's accounts
 export const FETCH_DATA = 'FETCH_DATA'
@@ -64,5 +66,15 @@ export const setUserLoginStatus = (status) => {
     return {
         type: SET_USER_LOGIN_STATUS,
         payload: status
+    }
+}
+export const userLogout = () => {
+    return {
+        type: USER_LOGOUT
+    }
+}
+export const userAccountsLogout = () => {
+    return {
+        type: USER_ACCOUNTS_LOGOUT
     }
 }
