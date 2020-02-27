@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { StoreContext } from '../stores/store'
-import services from '../services'
+
+import { useDispatch, useSelector } from "react-redux"
+import { fetchUserLoginData } from '../actions'
 
 import { TextField } from '@material-ui/core';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -14,38 +16,26 @@ const DEFAULT_LOGIN = 'sawsdev-mcastillo@saisd.net'
 const Login = () => {
     //Locals
     const [username, setUsername] = useState(DEFAULT_LOGIN);
-    const [loginError, setLoginError] = useState(null);
-    const [loadingLogin, setLoadingLogin] = useState(false);
-    //Globals 
-    const { ['propertyInfo']: [globalProperties, setGlobalProperties] } = useContext(StoreContext);
-    const { ['propertyInfoIntact']: [globalPropertiesIntact, setGlobalPropertiesIntact] } = useContext(StoreContext);
+
     const history = useHistory();
+
+    const userloginstatus = useSelector(state => state.app.userloginstatus)
+    const dispatch = useDispatch()
 
     const changeHandler = (event) => {
         setUsername(event.target.value)
-        console.log({username})
-        setLoginError(null)
     }
     const login = (event) => { //TODO: get and store token
         event.preventDefault()
         event.stopPropagation()
-        setLoadingLogin(true)
-        services.user.sendLogin(username).then(
-            //success
-            p => { //p is the returned promise
-                setLoginError(null)
-                setLoadingLogin(false)
-                history.replace({ pathname: '/app', state: {p: p}})
-            }, 
-            //error
-            e => { handleError(e) }
-        )
+        dispatch(fetchUserLoginData(username))
     }
-    const handleError = (e) => {
-        setLoginError(e)
-        setLoadingLogin(false)
-        console.error({e, username})
-    }
+    
+    useEffect(() => {
+        if (userloginstatus==='success') {
+            history.replace({ pathname: '/app' })
+        }
+    }, [userloginstatus]);
 
     return (
         <div className="login">
@@ -93,14 +83,20 @@ const Login = () => {
                     }}
                     />
                 </div>
-                <div>{ loginError && `There was an error for ${username}` }</div>
+                <div>
+                    {userloginstatus==='failure' && (
+                        `There was an error for ${username}`
+                    )}
+                </div>
                 <div className="sign-in-button" onClick={(e) => {login(e)}}>
-                    <div>{
-                            (!loginError && loadingLogin)? 
+                    <div>
+                        {userloginstatus==='pending' && (
                             <CircularProgress size={20}/>
-                            :
+                        )}
+                        
+                        {userloginstatus!=='pending' && (
                             <span>Sign In</span>
-                        }
+                        )}
                     </div>
                 </div>
                 <div className="terms">

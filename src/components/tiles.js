@@ -4,7 +4,7 @@ import services from '../services'
 import { get } from 'lodash'
 
 import { useDispatch, useSelector } from "react-redux"
-import { fetchUserAccounts, fetchData } from '../actions'
+import { fetchData } from '../actions'
 
 import CardBalance from './card-balance'
 import CardUsage from './card-usage'
@@ -25,31 +25,13 @@ const Tiles = (props) => {
     const [propertiesError, setPropertiesError] = useState(null);
     const history = useHistory();
 
+    const userdata = useSelector(state => state.app.userdata)
     const accounts = useSelector(state => state.userAccounts.data)
     const status = useSelector(state => state.userAccounts.status)
     const dispatch = useDispatch()
 
     useEffect(() => {
-        //dispatch(fetchUserAccounts(get(props.p, 'userx52id', null)))
-        dispatch(fetchData(get(props.p, 'userx52id', null)))
-        // if (!globalPropertiesIntact || !globalPropertiesIntact.length) {
-        //     services.user.fetchUserAccounts(get(props.p, 'userx52id', null)).then(
-        //         //success
-        //         p => {
-        //             setGlobalProperties(p); 
-        //             setGlobalPropertiesIntact(p);
-        //             webWorker.postMessage({action: 'setAccounts', accounts: p});
-                    
-        //             webWorker.postMessage({action: 'getAccounts'});
-        //         },
-        //         //error
-        //         e => {
-        //             console.error('error getting accounts', {e})
-        //             throw e
-        //         }
-        //     ).catch((e) => { handleError(e) })
-        // }
-        //setProperties(accounts)
+        dispatch(fetchData(userdata.userx52id))
     }, []);
 
     const handleError = (e) => {

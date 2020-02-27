@@ -8,7 +8,7 @@ import Tiles from './tiles'
 import PayContinueBar from './pay-continue-bar'
 import Footer from './footer'
 
-function AppLayout(props) {
+function AppLayout() {
     const { ['appInfo']: [dataApp, setDataApp] } = useContext(StoreContext);
 
     return (
@@ -17,7 +17,7 @@ function AppLayout(props) {
             <PageTitles />
             <Search />
             <PayButtons />
-            <Tiles p={props.location.state.p}/>
+            <Tiles/>
             {
                 dataApp.activeLink==='payment' && 
                 <PayContinueBar/>

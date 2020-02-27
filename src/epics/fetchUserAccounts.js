@@ -7,7 +7,7 @@ import { concat, of } from 'rxjs'
 const API = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuseraccounts/'
 
 export function fetchUserAccountsEpic(action$) {
-
+ //TODO: trap errors
     return action$.pipe(
         ofType(FETCH_DATA),
         switchMap(({ payload }) => {
