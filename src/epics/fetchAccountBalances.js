@@ -4,15 +4,15 @@ import { fetchBalancesFailed, fetchBalancesFulFilled, FETCH_BALANCES_DATA, setBa
 import { ofType } from 'redux-observable'
 import { concat, of, forkJoin } from 'rxjs'
 
-const API = 'http://jsonplaceholder.typicode.com/users/'
+const apiBase = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/account/api/getbalance/'
 
-export function fetchAccountBalancesEpic(action$) {
+export function fetchAccountBalancesEpic(action$, state$) {
     return action$.pipe(
         ofType(FETCH_BALANCES_DATA),
         switchMap(() => {
 
-            const reqs = [1, 2, 3].map((i) => {//TODO: access store$ for userAccounts and use this as the array
-                return ajax.getJSON(API+i)//.pipe(pluck(0));
+            const reqs = state$.value.userAccounts.data.map((o) => {//TODO: access store$ for userAccounts and use this as the array
+                return ajax.getJSON(apiBase + o.accountkey)//.pipe(pluck(0));
             });
 
             const ajax$ = forkJoin(reqs).pipe(
@@ -33,7 +33,10 @@ export function fetchAccountBalancesEpic(action$) {
             //     of(setStatus("pending")),
             //     race(ajax$, blocker$)
             // )
-            return ajax$
+            return concat(
+                of(setBalancesStatus('pending')),
+                ajax$
+            )
         })
     );
 }

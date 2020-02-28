@@ -4,7 +4,7 @@ import { fetchBalancesData, fetchFailed, fetchFulFilled, FETCH_DATA, setStatus }
 import { ofType } from 'redux-observable'
 import { concat, of } from 'rxjs'
 
-const API = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuseraccounts/'
+const apiBase = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuseraccounts/'
 
 export function fetchUserAccountsEpic(action$) {
  //TODO: trap errors
@@ -14,7 +14,7 @@ export function fetchUserAccountsEpic(action$) {
         switchMap(({ payload }) => {
             return concat(
                 of(setStatus('pending')),
-                ajax.getJSON(API+payload).pipe(
+                ajax.getJSON(apiBase+payload).pipe(
                     map(resp => fetchFulFilled(resp)),
                     catchError(err => { //Network error
                         return of(fetchFailed(err.response.message))

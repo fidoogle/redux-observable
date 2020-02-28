@@ -9,7 +9,7 @@ import {
 import { ofType } from 'redux-observable'
 import { concat, of, throwError } from 'rxjs'
 
-const API = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuserbyemail/'
+const apiBase = 'https://dev-api-assetmanagemnt-workerhost.azure.saws.org/user/api/getuserbyemail/'
 
 export function fetchUserLoginEpic(action$) {//TODO: trap errors
 
@@ -19,7 +19,7 @@ export function fetchUserLoginEpic(action$) {//TODO: trap errors
         switchMap(({ payload }) => {
             return concat(
                 of(setUserLoginStatus('pending')),
-                ajax.getJSON(API+payload).pipe(
+                ajax.getJSON(apiBase+payload).pipe(
                     //map(resp => fetchUserLoginFulFilled(resp)),
                     map(resp => {
                         if (resp !== null) {
