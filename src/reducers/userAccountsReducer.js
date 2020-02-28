@@ -34,14 +34,15 @@ export function userAccountsReducer(state = initialState, action) {
                 ...state,
                 status: 'success',
                 data: action.payload,
-                messages: [] //clear out msgs
+                messages: []
             }
 
         case USER_ACCOUNTS_LOGOUT: 
             return {
                 ...state,
                 data: [],
-                status: 'idle'
+                status: 'idle',
+                messages: []
             }
             
         default: return state
