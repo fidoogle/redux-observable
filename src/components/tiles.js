@@ -32,7 +32,6 @@ const Tiles = (props) => {
 
     useEffect(() => {
         dispatch(fetchData(userdata.userx52id))
-        dispatch(fetchBalancesData(userdata.userx52id))
     }, []);
 
     const handleError = (e) => {

@@ -1,6 +1,6 @@
 import { ajax } from 'rxjs/ajax'
-import { catchError, filter, map, switchMap } from 'rxjs/operators'
-import { fetchFailed, fetchFulFilled, FETCH_DATA, setStatus } from '../actions'
+import { catchError, filter, map, mapTo, switchMap } from 'rxjs/operators'
+import { fetchBalancesData, fetchFailed, fetchFulFilled, FETCH_DATA, setStatus } from '../actions'
 import { ofType } from 'redux-observable'
 import { concat, of } from 'rxjs'
 
@@ -19,7 +19,8 @@ export function fetchUserAccountsEpic(action$) {
                     catchError(err => { //Network error
                         return of(fetchFailed(err.response.message))
                     })
-                )
+                ),
+                of(fetchBalancesData())
             )
         })
     )
