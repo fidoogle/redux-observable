@@ -4,7 +4,7 @@ import services from '../services'
 import { get } from 'lodash'
 
 import { useDispatch, useSelector } from "react-redux"
-import { fetchData } from '../actions'
+import { fetchData, fetchBalancesData } from '../actions'
 
 import CardBalance from './card-balance'
 import CardUsage from './card-usage'
@@ -32,6 +32,7 @@ const Tiles = (props) => {
 
     useEffect(() => {
         dispatch(fetchData(userdata.userx52id))
+        dispatch(fetchBalancesData(userdata.userx52id))
     }, []);
 
     const handleError = (e) => {

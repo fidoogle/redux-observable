@@ -1,8 +1,8 @@
 import {
-    FETCH_FAILED,
-    FETCH_FULFILLED, 
-    SET_STATUS, 
-    USER_ACCOUNTS_LOGOUT
+    FETCH_BALANCES_FAILED,
+    FETCH_BALANCES_FULFILLED, 
+    SET_BALANCES_STATUS, 
+    BALANCES_LOGOUT
 } from '../actions'
 
 const initialState = {
@@ -11,15 +11,15 @@ const initialState = {
     status: "idle", // "idle" | "pending" | "success" | "failure"
 }
 
-export function userAccountsReducer(state = initialState, action) {
+export function balancesReducer(state = initialState, action) {
     switch(action.type) {
-        case SET_STATUS: 
+        case SET_BALANCES_STATUS: 
             return {
                 ...state,
                 status: action.payload
             }
         
-        case FETCH_FAILED:
+        case FETCH_BALANCES_FAILED:
             return {
                 ...state,
                 status: 'failure',
@@ -29,7 +29,7 @@ export function userAccountsReducer(state = initialState, action) {
                 }]
             }
 
-        case FETCH_FULFILLED:
+        case FETCH_BALANCES_FULFILLED:
             return {
                 ...state,
                 status: 'success',
@@ -37,7 +37,7 @@ export function userAccountsReducer(state = initialState, action) {
                 messages: [] //clear out msgs
             }
 
-        case USER_ACCOUNTS_LOGOUT: 
+        case BALANCES_LOGOUT: 
             return {
                 ...state,
                 data: [],

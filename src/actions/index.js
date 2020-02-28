@@ -5,12 +5,19 @@ export const FETCH_USER_LOGIN_FULFILLED = 'FETCH_USER_LOGIN_FULFILLED'
 export const SET_USER_LOGIN_STATUS = 'SET_USER_LOGIN_STATUS'
 export const USER_LOGOUT = 'USER_LOGOUT'
 export const USER_ACCOUNTS_LOGOUT = 'USER_ACCOUNTS_LOGOUT'
+export const BALANCES_LOGOUT = 'BALANCES_LOGOUT'
 
 //Fetch user's accounts
 export const FETCH_DATA = 'FETCH_DATA'
 export const FETCH_FAILED = 'FETCH_FAILED'
 export const FETCH_FULFILLED = 'FETCH_FULFILLED'
 export const SET_STATUS = 'SET_STATUS'
+
+//Fetch account balances
+export const FETCH_BALANCES_DATA = 'FETCH_BALANCES_DATA'
+export const FETCH_BALANCES_FAILED = 'FETCH_BALANCES_FAILED'
+export const FETCH_BALANCES_FULFILLED = 'FETCH_BALANCES_FULFILLED'
+export const SET_BALANCES_STATUS = 'SET_BALANCES_STATUS'
 
 
 // export const fetchUserAccounts = (accountID) => async dispatch => {
@@ -82,6 +89,7 @@ export const setUserLoginStatus = (status) => {
         payload: status
     }
 }
+
 export const userLogout = () => {
     return {
         type: USER_LOGOUT
@@ -90,5 +98,37 @@ export const userLogout = () => {
 export const userAccountsLogout = () => {
     return {
         type: USER_ACCOUNTS_LOGOUT
+    }
+}
+export const balancesLogout = () => {
+    return {
+        type: BALANCES_LOGOUT
+    }
+}
+
+
+export const fetchBalancesData= (accountKey) => {
+    return {
+        type: FETCH_BALANCES_DATA,
+        payload: accountKey
+    }
+}
+export const fetchBalancesFailed = (message) => {
+    return {
+        type: FETCH_BALANCES_FAILED,
+        payload: message
+    }
+}
+export const fetchBalancesFulFilled = (balances) => {
+    console.log({balances})
+    return {
+        type: FETCH_BALANCES_FULFILLED,
+        payload: balances
+    }
+}
+export const setBalancesStatus = (status) => {
+    return {
+        type: SET_BALANCES_STATUS,
+        payload: status
     }
 }
